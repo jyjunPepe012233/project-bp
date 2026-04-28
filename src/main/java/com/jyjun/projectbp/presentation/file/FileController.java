@@ -2,6 +2,7 @@ package com.jyjun.projectbp.presentation.file;
 
 import com.jyjun.projectbp.application.file.usecase.DownloadFileUseCase;
 import com.jyjun.projectbp.application.file.usecase.UploadFileUseCase;
+import com.jyjun.projectbp.application.model.output.DownloadFileOutput;
 import com.jyjun.projectbp.domain.filemeta.FileMeta;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.InputStreamSource;
@@ -33,10 +34,10 @@ public class FileController {
 
     @GetMapping("/{storedName}")
     public ResponseEntity<InputStreamSource> downloadFile(@PathVariable String storedName) {
-        var inputStream = downloadFileUseCase.execute(storedName);
+        DownloadFileOutput output = downloadFileUseCase.execute(storedName);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + storedName)
                 .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
-                .body(new InputStreamResource(inputStream));
+                .body(new InputStreamResource(output.fileData()));
     }
 }
