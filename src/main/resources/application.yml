@@ -16,3 +16,6 @@ spring:
       ddl-auto: create-drop
     show-sql: true
 
+file:
+  storage:
+    base-dir: ${USER.HOME}/files
