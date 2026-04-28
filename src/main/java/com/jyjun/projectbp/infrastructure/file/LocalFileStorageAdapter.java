@@ -29,14 +29,13 @@ public class LocalFileStorageAdapter implements FileStoragePort {
     }
 
     @Override
-    public void save(String storedName, InputStream fileData) {
+    public long save(String storedName, InputStream fileData) {
         try {
-            Files.copy(
+            return Files.copy(
                     fileData,
-                    baseDir.resolve(storedName), // 파일 저장 경로
-                    StandardCopyOption.REPLACE_EXISTING // 덮어쓰기
+                    baseDir.resolve(storedName),
+                    StandardCopyOption.REPLACE_EXISTING
             );
-            System.out.println(baseDir.resolve(storedName).toAbsolutePath());
         } catch (IOException e) {
             throw new UncheckedIOException("파일 저장 실패: " + storedName, e);
         }

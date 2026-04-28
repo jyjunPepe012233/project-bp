@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 public interface FileStoragePort {
 
-    void save(String storedName, InputStream fileData);
+    long save(String storedName, InputStream fileData);
 
     InputStream load(String storedName);
 

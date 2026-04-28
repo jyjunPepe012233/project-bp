@@ -1,10 +1,9 @@
-package com.jyjun.projectbp.domain.filemeta;
+package com.jyjun.projectbp.domain.filemeta.model;
 
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_file_meta")
@@ -32,14 +31,14 @@ public class FileMeta {
     public FileMeta() {
     }
 
-    public FileMeta(String originalName, long sizeByte) {
+    public FileMeta(String originalName, String storedName, long sizeByte) {
 
         if (StringUtils.isBlank(originalName)) {
             throw new IllegalArgumentException("Original name must not be null or blank");
         }
 
         this.originalName = originalName;
-        this.storedName = UUID.randomUUID().toString();
+        this.storedName = storedName;
         this.sizeByte = sizeByte;
         this.createdAt = LocalDateTime.now();
     }

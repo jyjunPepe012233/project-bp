@@ -1,6 +1,15 @@
 spring:
   application:
     name: project-bp
+  servlet:
+    multipart:
+
+      # 파일 업로드는 컨트롤러에서 Apache Commons FileUpload 라이브러리를 사용하여 처리함
+      # Spring Boot의 기본 Multipart를 활성화해둘 경우 Form data에 담긴 파일을 Spring의 Servlet이 파싱하는데,
+      # 이 과정에서 메모리에 파일이 로드되는 문제가 있고 용량이 크면 Spring Servlet이 413(Request Entity Too Large) 에러를 발생시킴
+      # 그래서 꺼둠
+      enabled: false
+
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
