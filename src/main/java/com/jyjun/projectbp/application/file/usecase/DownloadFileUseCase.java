@@ -1,22 +1,30 @@
 package com.jyjun.projectbp.application.file.usecase;
 
+import com.jyjun.projectbp.application.file.outbound.FileMetaRepositoryPort;
 import com.jyjun.projectbp.application.file.outbound.FileStoragePort;
+import com.jyjun.projectbp.application.model.output.DownloadFileOutput;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.io.InputStream;
 
 @Service
 public class DownloadFileUseCase {
 
     private final FileStoragePort fileStoragePort;
+    private final FileMetaRepositoryPort fileMetaRepositoryPort;
 
-    public DownloadFileUseCase(FileStoragePort fileStoragePort) {
+    public DownloadFileUseCase(FileStoragePort fileStoragePort, FileMetaRepositoryPort fileMetaRepositoryPort) {
         this.fileStoragePort = fileStoragePort;
+        this.fileMetaRepositoryPort = fileMetaRepositoryPort;
     }
 
     @Transactional
-    public InputStream execute(String storedName) {
-        return fileStoragePort.load(storedName);
+    public DownloadFileOutput execute(String storedName) {
+        var fileMeta = fileMetaRepositoryPort.findByStoredName(storedName);
+        return new DownloadFileOutput(
+                fileMeta.getOriginalName(),
+                fileMeta.getStoredName(),
+                fileMeta.getSizeByte(),
+                fileStoragePort.load(fileMeta.getStoredName())
+        );
     }
 }
