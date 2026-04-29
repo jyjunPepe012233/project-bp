@@ -52,11 +52,11 @@ public class FileController {
         throw new IllegalArgumentException("요청에 파일 파트가 없습니다.");
     }
 
-    @GetMapping("/{storedName}")
-    public ResponseEntity<InputStreamSource> downloadFile(@PathVariable String storedName) {
-        DownloadFileOutput output = downloadFileUseCase.execute(storedName);
+    @GetMapping("/{originalName}")
+    public ResponseEntity<InputStreamSource> downloadFile(@PathVariable String originalName) {
+        DownloadFileOutput output = downloadFileUseCase.execute(originalName);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + storedName)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + originalName)
                 .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
                 .body(new InputStreamResource(output.fileData()));
     }

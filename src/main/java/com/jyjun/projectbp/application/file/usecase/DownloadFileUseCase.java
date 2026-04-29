@@ -18,8 +18,8 @@ public class DownloadFileUseCase {
     }
 
     @Transactional
-    public DownloadFileOutput execute(String storedName) {
-        var fileMeta = fileMetaRepositoryPort.findByStoredName(storedName);
+    public DownloadFileOutput execute(String originalName) {
+        var fileMeta = fileMetaRepositoryPort.findByOriginalName(originalName);
         return new DownloadFileOutput(
                 fileMeta.getOriginalName(),
                 fileMeta.getStoredName(),

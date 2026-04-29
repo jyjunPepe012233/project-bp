@@ -6,5 +6,5 @@ public interface FileMetaRepositoryPort {
 
     FileMeta save(FileMeta fileMeta);
 
-    FileMeta findByStoredName(String storedName);
+    FileMeta findByOriginalName(String storedName);
 }

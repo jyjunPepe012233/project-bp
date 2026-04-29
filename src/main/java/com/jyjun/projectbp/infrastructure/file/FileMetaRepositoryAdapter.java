@@ -17,8 +17,8 @@ public class FileMetaRepositoryAdapter implements FileMetaRepositoryPort {
          return jpaFileMetaRepository.save(fileMeta);
      }
 
-     public FileMeta findByStoredName(String storedName) {
-         return jpaFileMetaRepository.findByStoredName(storedName)
-                 .orElseThrow(() -> new RuntimeException("FileMeta not found for storedName: " + storedName));
+     public FileMeta findByOriginalName(String originalName) {
+         return jpaFileMetaRepository.findByOriginalName(originalName)
+                 .orElseThrow(() -> new RuntimeException("FileMeta not found for originalName: " + originalName));
      }
 }

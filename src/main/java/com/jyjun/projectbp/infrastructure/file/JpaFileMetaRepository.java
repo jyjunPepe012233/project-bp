@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface JpaFileMetaRepository extends JpaRepository<FileMeta, Long> {
 
-    Optional<FileMeta> findByStoredName(String storedName);
+    Optional<FileMeta> findByOriginalName(String storedName);
 }
