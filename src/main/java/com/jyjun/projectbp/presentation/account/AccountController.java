@@ -3,7 +3,7 @@ package com.jyjun.projectbp.presentation.account;
 import com.jyjun.projectbp.application.account.model.input.CreateAccountInput;
 import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
-import org.springframework.http.ResponseEntity;
+import com.jyjun.projectbp.common.dto.ResponseData;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +20,10 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateAccountResponse> createAccount(@RequestBody CreateAccountRequest request) {
+    public ResponseData<CreateAccountResponse> createAccount(@RequestBody CreateAccountRequest request) {
         CreateAccountOutput output = createAccountUseCase.execute(
                 new CreateAccountInput(request.name(), request.email(), request.password())
         );
-        return ResponseEntity.ok(new CreateAccountResponse(output));
+        return new ResponseData<>(new CreateAccountResponse(output));
     }
 }

@@ -1,6 +1,7 @@
 package com.jyjun.projectbp.application.account.usecase;
 
 import com.jyjun.projectbp.application.account.model.input.CreateAccountInput;
+import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.outbound.AccountRepositoryPort;
 import com.jyjun.projectbp.application.account.outbound.EncodePasswordPort;
 import com.jyjun.projectbp.domain.account.model.Account;
@@ -19,7 +20,7 @@ public class CreateAccountUseCase {
     }
 
     @Transactional
-    public void execute(CreateAccountInput input) {
+    public CreateAccountOutput execute(CreateAccountInput input) {
 
         String encodedPassword = encodePasswordPort.encode(input.password());
 
@@ -29,5 +30,7 @@ public class CreateAccountUseCase {
                 encodedPassword
         );
         Account saved = accountRepositoryPort.save(account);
+
+        return new CreateAccountOutput(saved.getId(), saved.getName(), saved.getEmail());
     }
 }
