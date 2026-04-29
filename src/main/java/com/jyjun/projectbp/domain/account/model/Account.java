@@ -16,6 +16,7 @@ public class Account {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String encodedPassword;
 
     protected Account() {
