@@ -1,4 +1,4 @@
-package com.jyjun.projectbp.application.model.output;
+package com.jyjun.projectbp.application.file.model.output;
 
 import java.io.InputStream;
 

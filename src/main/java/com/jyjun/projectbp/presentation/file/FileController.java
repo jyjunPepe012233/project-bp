@@ -2,7 +2,7 @@ package com.jyjun.projectbp.presentation.file;
 
 import com.jyjun.projectbp.application.file.usecase.DownloadFileUseCase;
 import com.jyjun.projectbp.application.file.usecase.UploadFileUseCase;
-import com.jyjun.projectbp.application.model.output.DownloadFileOutput;
+import com.jyjun.projectbp.application.file.model.output.DownloadFileOutput;
 import com.jyjun.projectbp.domain.filemeta.model.FileMeta;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload2.core.FileItemInput;

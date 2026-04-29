@@ -2,7 +2,7 @@ package com.jyjun.projectbp.application.file.usecase;
 
 import com.jyjun.projectbp.application.file.outbound.FileMetaRepositoryPort;
 import com.jyjun.projectbp.application.file.outbound.FileStoragePort;
-import com.jyjun.projectbp.application.model.output.DownloadFileOutput;
+import com.jyjun.projectbp.application.file.model.output.DownloadFileOutput;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
