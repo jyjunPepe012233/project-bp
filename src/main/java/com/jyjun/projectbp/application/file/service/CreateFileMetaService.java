@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 public class CreateFileMetaService {
 
     private final FileMetaRepositoryPort fileMetaRepositoryPort;
-    private final SaveFileService saveFileService;
 
     public CreateFileMetaService(FileMetaRepositoryPort fileMetaRepositoryPort) {
         this.fileMetaRepositoryPort = fileMetaRepositoryPort;
