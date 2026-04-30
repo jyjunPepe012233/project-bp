@@ -16,9 +16,7 @@ public class JwtIssueAccessTokenAdapter implements IssueAccessTokenPort {
     private final SecretKey signingKey;
     private final long accessTokenExpirationMs;
 
-    public JwtIssueAccessTokenAdapter(
-            @Value("${jwt.secret}") String secret,
-            @Value("${jwt.access-token-expiration-ms}") long accessTokenExpirationMs) {
+    public JwtIssueAccessTokenAdapter(@Value("${jwt.secret}") String secret, @Value("${jwt.access-token-expiration-ms}") long accessTokenExpirationMs) {
         this.signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         this.accessTokenExpirationMs = accessTokenExpirationMs;
     }

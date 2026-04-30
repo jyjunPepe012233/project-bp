@@ -28,7 +28,8 @@ public class ValidateRefreshTokenService {
             throw new IllegalStateException("Refresh token expired");
         }
 
-        // 사용된 토큰은 사용 처리
+        // 이미 사용된 토큰이라도 삭제하지 않고 사용 처리만 함.
+        // DB에 남아있는 토큰을 통해 어떤 계정의 토큰이 재사용되었는지 확인 가능하도록 하기 위함임
         refreshToken.markAsUsed();
         refreshTokenRepositoryPort.save(refreshToken);
 

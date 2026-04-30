@@ -31,4 +31,5 @@ file:
 
 jwt:
   secret: ${SECURITY.JWT_SECRET}
-  access-token-expiration-ms: 900000 # 15분
+  access-token-expiration-ms: 900000  # 15분
+  refresh-token-expiration-days: 30
