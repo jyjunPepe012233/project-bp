@@ -1,6 +1,5 @@
 package com.jyjun.projectbp.application.file.service;
 
-import com.jyjun.projectbp.application.file.outbound.FileMetaRepositoryPort;
 import com.jyjun.projectbp.application.file.outbound.FileStoragePort;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,7 @@ public class LoadFileService {
 
     private final FileStoragePort fileStoragePort;
 
-    public LoadFileService(FileStoragePort fileStoragePort, FileMetaRepositoryPort fileMetaRepositoryPort) {
+    public LoadFileService(FileStoragePort fileStoragePort) {
         this.fileStoragePort = fileStoragePort;
     }
 
