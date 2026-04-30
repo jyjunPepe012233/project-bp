@@ -5,4 +5,6 @@ import com.jyjun.projectbp.domain.account.model.Account;
 public interface AccountRepositoryPort {
 
     Account save(Account account);
+
+    Account findByName(String name);
 }
