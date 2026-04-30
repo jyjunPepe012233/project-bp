@@ -28,3 +28,7 @@ spring:
 file:
   storage:
     base-dir: ${USER.HOME}/files
+
+jwt:
+  secret: ${SECURITY.JWT_SECRET}
+  access-token-expiration-ms: 900000 # 15분
