@@ -54,4 +54,12 @@ public class Game {
     public Long getDeveloperId() {
         return developerId;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
