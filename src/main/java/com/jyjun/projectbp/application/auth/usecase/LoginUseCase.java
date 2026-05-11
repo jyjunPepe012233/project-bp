@@ -25,7 +25,7 @@ public class LoginUseCase {
 
     @Transactional
     public LoginOutput execute(LoginInput input) {
-        Account account = loadAccountService.loadByName(input.name());
+        Account account = loadAccountService.loadByNameOrThrow(input.name());
         verifyPasswordService.verify(input.password(), account.getEncodedPassword());
 
         String accessToken = issueTokenService.issueAccessToken(account.getId());
