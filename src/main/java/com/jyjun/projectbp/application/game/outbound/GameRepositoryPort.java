@@ -6,5 +6,7 @@ import java.util.Optional;
 
 public interface GameRepositoryPort {
 
+    Game save(Game game);
+
     Optional<Game> findById(Long id);
 }

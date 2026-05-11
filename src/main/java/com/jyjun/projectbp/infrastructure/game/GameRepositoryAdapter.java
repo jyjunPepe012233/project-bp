@@ -16,6 +16,11 @@ public class GameRepositoryAdapter implements GameRepositoryPort {
     }
 
     @Override
+    public Game save(Game game) {
+        return jpaGameRepository.save(game);
+    }
+
+    @Override
     public Optional<Game> findById(Long id) {
         return jpaGameRepository.findById(id);
     }
