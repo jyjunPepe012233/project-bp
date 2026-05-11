@@ -60,6 +60,10 @@ public class CreateAccountUseCase {
     public CreateAccountOutput execute(CreateAccountInput input) {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
 
+        if (input.developerAccessPermissions().isEmpty() && input.gameAccessPermissions().isEmpty()) {
+            throw new IllegalArgumentException("계정에는 최소 하나 이상의 권한이 필요합니다.");
+        }
+
         // 계정을 먼저 생성하고, 해당 계정이 어떤 Developer나 Game에 연결할지는 아래 루프에서 검증하면서 연결할 것임
         Account created = createAccountService.create(input.name(), input.password());
 
