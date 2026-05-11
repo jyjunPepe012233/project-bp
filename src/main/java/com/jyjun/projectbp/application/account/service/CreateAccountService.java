@@ -16,13 +16,9 @@ public class CreateAccountService {
         this.accountRepositoryPort = accountRepositoryPort;
     }
 
-    public Account create(String name, String email, String rawPassword) {
+    public Account create(String name, String rawPassword) {
         String encodedPassword = encodePasswordPort.encode(rawPassword);
-        Account account = new Account(
-                name,
-                email,
-                encodedPassword
-        );
+        Account account = new Account(name, encodedPassword);
         return accountRepositoryPort.save(account);
     }
 }

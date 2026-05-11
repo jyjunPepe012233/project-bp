@@ -13,18 +13,14 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
     @Column(nullable = false)
     private String encodedPassword;
 
     protected Account() {
     }
 
-    public Account(String name, String email, String encodedPassword) {
+    public Account(String name, String encodedPassword) {
         this.name = name;
-        this.email = email;
         this.encodedPassword = encodedPassword;
     }
 
@@ -36,16 +32,8 @@ public class Account {
         return name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public String getEncodedPassword() {
         return encodedPassword;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void setEncodedPassword(String encodedPassword) {

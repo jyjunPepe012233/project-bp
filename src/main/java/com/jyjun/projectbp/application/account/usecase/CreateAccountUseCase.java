@@ -61,7 +61,7 @@ public class CreateAccountUseCase {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
 
         // 계정을 먼저 생성하고, 해당 계정이 어떤 Developer나 Game에 연결할지는 아래 루프에서 검증하면서 연결할 것임
-        Account created = createAccountService.create(input.name(), input.email(), input.password());
+        Account created = createAccountService.create(input.name(), input.password());
 
         // 각 개발자 접근 권한에 대해, 해당 권한을 부여할 수 있는지 검증하는 루프
         for (DeveloperAccessPermissionEntry entry : input.developerAccessPermissions()) {
@@ -100,6 +100,6 @@ public class CreateAccountUseCase {
             }
         }
 
-        return new CreateAccountOutput(created.getName(), created.getEmail());
+        return new CreateAccountOutput(created.getName());
     }
 }
