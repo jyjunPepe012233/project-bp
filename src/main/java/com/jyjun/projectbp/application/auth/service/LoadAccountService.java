@@ -15,6 +15,11 @@ public class LoadAccountService {
         this.accountRepositoryPort = accountRepositoryPort;
     }
 
+    public Account loadByIdOrThrow(Long id) {
+        return accountRepositoryPort.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Account not found: id=" + id));
+    }
+
     public Account loadByNameOrThrow(String name) {
         return accountRepositoryPort.findByName(name)
                 .orElseThrow(() -> new NoSuchElementException("Account not found: " + name));

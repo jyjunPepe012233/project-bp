@@ -21,6 +21,11 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     }
 
     @Override
+    public Optional<Account> findById(Long id) {
+        return jpaAccountRepository.findById(id);
+    }
+
+    @Override
     public Optional<Account> findByName(String name) {
         return jpaAccountRepository.findByName(name);
     }

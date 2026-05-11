@@ -8,5 +8,7 @@ public interface AccountRepositoryPort {
 
     Account save(Account account);
 
+    Optional<Account> findById(Long id);
+
     Optional<Account> findByName(String name);
 }
