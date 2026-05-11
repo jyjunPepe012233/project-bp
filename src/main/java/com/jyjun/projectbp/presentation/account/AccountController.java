@@ -4,10 +4,7 @@ import com.jyjun.projectbp.application.account.model.input.CreateAccountInput;
 import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/accounts")
@@ -19,11 +16,11 @@ public class AccountController {
         this.createAccountUseCase = createAccountUseCase;
     }
 
+    // TODO: DTO 리팩토링
+    // 이 API처럼 Request/Response DTO를 따로 사용하지 않고 application의 Input/Output을 바로 사용하기.
+    // 어차피 API과 UseCase가 1대1 구조이기 때문임
     @PostMapping
-    public ResponseData<CreateAccountResponse> createAccount(@RequestBody CreateAccountRequest request) {
-        CreateAccountOutput output = createAccountUseCase.execute(
-                new CreateAccountInput(request.name(), request.email(), request.password())
-        );
-        return new ResponseData<>(new CreateAccountResponse(output));
+    public ResponseData<CreateAccountOutput> createAccount(@RequestBody CreateAccountInput input) {
+        return new ResponseData<>(createAccountUseCase.execute(input));
     }
 }

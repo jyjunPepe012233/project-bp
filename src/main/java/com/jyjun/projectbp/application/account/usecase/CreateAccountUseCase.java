@@ -1,33 +1,83 @@
 package com.jyjun.projectbp.application.account.usecase;
 
+import com.jyjun.projectbp.application.account.model.entry.GameAccessPermissionEntry;
 import com.jyjun.projectbp.application.account.model.input.CreateAccountInput;
 import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.service.CreateAccountService;
+import com.jyjun.projectbp.application.auth.service.LoadCurrentAccountService;
+import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
+import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
+import com.jyjun.projectbp.application.game.service.LoadGameService;
+import com.jyjun.projectbp.application.permission.service.CreateGameAccessPermissionService;
+import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
+import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
+import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
+import com.jyjun.projectbp.application.permission.util.HasGameAccessPermissionUtil;
 import com.jyjun.projectbp.domain.account.model.Account;
+import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
+import com.jyjun.projectbp.domain.game.model.Game;
+import com.jyjun.projectbp.domain.gameaccesspermission.enums.GameAccessPermissionType;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-// 이 API 안 쓸 것 같음.
-// 계정 생성은 개발자 생성하면서 루트 계정이 자동으로 생성되고, 이 루트 계정이 하위 계정을 만드는 방식으로 할 것 같음.
-// 즉 아무 개발자와 연결되지 않은, 쓸모없는 계정이 존재할 수도 있으므로 독립된 계정을 생성하는 API는 안 만들 듯
-// TOOD: 이 API(UseCase) 삭제하기
 
 @Service
 public class CreateAccountUseCase {
 
     private final CreateAccountService createAccountService;
+    private final LoadCurrentAccountService loadCurrentAccountService;
+    private final LoadGameService loadGameService;
+    private final CreateGameAccessPermissionService createGameAccessPermissionService;
 
-    public CreateAccountUseCase(CreateAccountService createAccountService) {
+    private final IsRootAccountOfDeveloperUtil isRootAccountOfDeveloperUtil;
+    private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
+    private final HasGameAccessPermissionUtil hasGameAccessPermissionUtil;
+
+    public CreateAccountUseCase(
+            CreateAccountService createAccountService,
+            LoadCurrentAccountService loadCurrentAccountService,
+            LoadGameService loadGameService,
+            LoadDeveloperService loadDeveloperService,
+            LoadDeveloperAccessPermissionService loadDeveloperAccessPermissionService,
+            LoadGameAccessPermissionService loadGameAccessPermissionService,
+            CreateGameAccessPermissionService createGameAccessPermissionService
+    ) {
         this.createAccountService = createAccountService;
+        this.loadCurrentAccountService = loadCurrentAccountService;
+        this.loadGameService = loadGameService;
+        this.createGameAccessPermissionService = createGameAccessPermissionService;
+
+        this.isRootAccountOfDeveloperUtil = new IsRootAccountOfDeveloperUtil(loadDeveloperService);
+        this.hasDeveloperAccessPermissionUtil = new HasDeveloperAccessPermissionUtil(loadDeveloperAccessPermissionService);
+        this.hasGameAccessPermissionUtil = new HasGameAccessPermissionUtil(loadGameAccessPermissionService);
     }
 
     @Transactional
     public CreateAccountOutput execute(CreateAccountInput input) {
-        Account created = createAccountService.create(
-                input.name(),
-                input.email(),
-                input.password()
-        );
+        Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
+
+        // 계정을 먼저 생성하고, 해당 계정이 어떤 Developer나 Game에 연결할지는 아래 루프에서 검증하면서 연결할 것임
+        Account created = createAccountService.create(input.name(), input.email(), input.password());
+
+        // 각 게임 접근 권한에 대해, 해당 게임의 권한을 사용자가 부여할 수 있는지 검증하는 루프
+        for (GameAccessPermissionEntry entry : input.gameAccessPermissions()) {
+            Game game = loadGameService.loadByIdOrThrow(entry.gameId());
+            Long developerId = game.getDeveloperId();
+
+            if (isRootAccountOfDeveloperUtil.is(currentAccountId, developerId)) {
+                // 루트 계정이면 통과
+            } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.ADMIN)) {
+                // 개발자 ADMIN 권한 있으면 통과
+            } else if (hasGameAccessPermissionUtil.has(currentAccountId, entry.gameId(), GameAccessPermissionType.ADMIN)) {
+                // 게임 ADMIN 권한 있으면 통과
+            } else {
+                throw new IllegalArgumentException("게임 접근 권한을 부여할 권한이 없습니다. (게임 ID: " + entry.gameId() + ")");
+            }
+
+            for (GameAccessPermissionType permission : entry.permissions()) {
+                createGameAccessPermissionService.create(created.getId(), entry.gameId(), permission);
+            }
+        }
+
         return new CreateAccountOutput(created.getName(), created.getEmail());
     }
 }
