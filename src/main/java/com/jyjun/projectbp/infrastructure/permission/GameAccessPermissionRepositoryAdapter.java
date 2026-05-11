@@ -41,4 +41,9 @@ public class GameAccessPermissionRepositoryAdapter implements GameAccessPermissi
     public Optional<GameAccessPermission> findByAccountIdAndGameIdAndPermission(Long accountId, Long gameId, GameAccessPermissionType permission) {
         return jpaGameAccessPermissionRepository.findByAccountIdAndGameIdAndPermission(accountId, gameId, permission);
     }
+
+    @Override
+    public void deleteByAccountIdAndGameId(Long accountId, Long gameId) {
+        jpaGameAccessPermissionRepository.deleteByAccountIdAndGameId(accountId, gameId);
+    }
 }

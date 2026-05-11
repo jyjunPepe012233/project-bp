@@ -17,4 +17,6 @@ public interface DeveloperAccessPermissionRepositoryPort {
     List<DeveloperAccessPermission> findByAccountIdAndDeveloperId(Long accountId, Long developerId);
 
     Optional<DeveloperAccessPermission> findByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission);
+
+    void deleteByAccountIdAndDeveloperId(Long accountId, Long developerId);
 }

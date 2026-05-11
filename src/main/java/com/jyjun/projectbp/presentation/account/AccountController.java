@@ -8,6 +8,12 @@ import com.jyjun.projectbp.application.account.model.output.UpdateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountPasswordUseCase;
+import com.jyjun.projectbp.application.permission.model.input.UpdateDeveloperPermissionInput;
+import com.jyjun.projectbp.application.permission.model.input.UpdateGamePermissionInput;
+import com.jyjun.projectbp.application.permission.model.output.UpdateDeveloperPermissionOutput;
+import com.jyjun.projectbp.application.permission.model.output.UpdateGamePermissionOutput;
+import com.jyjun.projectbp.application.permission.usecase.UpdateDeveloperPermissionUseCase;
+import com.jyjun.projectbp.application.permission.usecase.UpdateGamePermissionUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +24,21 @@ public class AccountController {
     private final CreateAccountUseCase createAccountUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
     private final UpdateAccountPasswordUseCase updateAccountPasswordUseCase;
+    private final UpdateDeveloperPermissionUseCase updateDeveloperPermissionUseCase;
+    private final UpdateGamePermissionUseCase updateGamePermissionUseCase;
 
-    public AccountController(CreateAccountUseCase createAccountUseCase, UpdateAccountUseCase updateAccountUseCase, UpdateAccountPasswordUseCase updateAccountPasswordUseCase) {
+    public AccountController(
+            CreateAccountUseCase createAccountUseCase,
+            UpdateAccountUseCase updateAccountUseCase,
+            UpdateAccountPasswordUseCase updateAccountPasswordUseCase,
+            UpdateDeveloperPermissionUseCase updateDeveloperPermissionUseCase,
+            UpdateGamePermissionUseCase updateGamePermissionUseCase
+    ) {
         this.createAccountUseCase = createAccountUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
         this.updateAccountPasswordUseCase = updateAccountPasswordUseCase;
+        this.updateDeveloperPermissionUseCase = updateDeveloperPermissionUseCase;
+        this.updateGamePermissionUseCase = updateGamePermissionUseCase;
     }
 
     // TODO: DTO 리팩토링
@@ -47,5 +63,27 @@ public class AccountController {
             @RequestBody UpdateAccountPasswordInput input
     ) {
         updateAccountPasswordUseCase.execute(new UpdateAccountPasswordInput(accountId, input.password()));
+    }
+
+    @PutMapping("/{accountId}/developer-permissions/{developerId}")
+    public ResponseData<UpdateDeveloperPermissionOutput> updateDeveloperPermission(
+            @PathVariable Long accountId,
+            @PathVariable Long developerId,
+            @RequestBody UpdateDeveloperPermissionInput input
+    ) {
+        return new ResponseData<>(updateDeveloperPermissionUseCase.execute(
+                new UpdateDeveloperPermissionInput(accountId, developerId, input.permissions())
+        ));
+    }
+
+    @PutMapping("/{accountId}/game-permissions/{gameId}")
+    public ResponseData<UpdateGamePermissionOutput> updateGamePermission(
+            @PathVariable Long accountId,
+            @PathVariable Long gameId,
+            @RequestBody UpdateGamePermissionInput input
+    ) {
+        return new ResponseData<>(updateGamePermissionUseCase.execute(
+                new UpdateGamePermissionInput(accountId, gameId, input.permissions())
+        ));
     }
 }
