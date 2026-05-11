@@ -4,7 +4,7 @@ import com.jyjun.projectbp.application.game.outbound.GameRepositoryPort;
 import com.jyjun.projectbp.domain.game.model.Game;
 import org.springframework.stereotype.Repository;
 
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Repository
 public class GameRepositoryAdapter implements GameRepositoryPort {
@@ -16,8 +16,7 @@ public class GameRepositoryAdapter implements GameRepositoryPort {
     }
 
     @Override
-    public Game findById(Long id) {
-        return jpaGameRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Game not found: id=" + id));
+    public Optional<Game> findById(Long id) {
+        return jpaGameRepository.findById(id);
     }
 }

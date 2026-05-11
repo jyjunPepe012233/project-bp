@@ -4,6 +4,8 @@ import com.jyjun.projectbp.application.developer.outbound.DeveloperRepositoryPor
 import com.jyjun.projectbp.domain.developer.model.Developer;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class DeveloperRepositoryAdapter implements DeveloperRepositoryPort {
 
@@ -16,5 +18,10 @@ public class DeveloperRepositoryAdapter implements DeveloperRepositoryPort {
     @Override
     public Developer save(Developer developer) {
         return jpaDeveloperRepository.save(developer);
+    }
+
+    @Override
+    public Optional<Developer> findByRootAccountId(Long rootAccountId) {
+        return jpaDeveloperRepository.findByRootAccountId(rootAccountId);
     }
 }

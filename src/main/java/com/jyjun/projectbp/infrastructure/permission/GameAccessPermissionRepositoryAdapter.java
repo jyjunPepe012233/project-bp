@@ -6,7 +6,7 @@ import com.jyjun.projectbp.domain.gameaccesspermission.model.GameAccessPermissio
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Repository
 public class GameAccessPermissionRepositoryAdapter implements GameAccessPermissionRepositoryPort {
@@ -38,8 +38,7 @@ public class GameAccessPermissionRepositoryAdapter implements GameAccessPermissi
     }
 
     @Override
-    public GameAccessPermission findByAccountIdAndGameIdAndPermission(Long accountId, Long gameId, GameAccessPermissionType permission) {
-        return jpaGameAccessPermissionRepository.findByAccountIdAndGameIdAndPermission(accountId, gameId, permission)
-                .orElseThrow(() -> new NoSuchElementException("GameAccessPermission not found"));
+    public Optional<GameAccessPermission> findByAccountIdAndGameIdAndPermission(Long accountId, Long gameId, GameAccessPermissionType permission) {
+        return jpaGameAccessPermissionRepository.findByAccountIdAndGameIdAndPermission(accountId, gameId, permission);
     }
 }

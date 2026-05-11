@@ -4,7 +4,7 @@ import com.jyjun.projectbp.application.account.outbound.AccountRepositoryPort;
 import com.jyjun.projectbp.domain.account.model.Account;
 import org.springframework.stereotype.Repository;
 
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Repository
 public class AccountRepositoryAdapter implements AccountRepositoryPort {
@@ -21,8 +21,7 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     }
 
     @Override
-    public Account findByName(String name) {
-        return jpaAccountRepository.findByName(name)
-                .orElseThrow(() -> new NoSuchElementException("Account not found: " + name));
+    public Optional<Account> findByName(String name) {
+        return jpaAccountRepository.findByName(name);
     }
 }

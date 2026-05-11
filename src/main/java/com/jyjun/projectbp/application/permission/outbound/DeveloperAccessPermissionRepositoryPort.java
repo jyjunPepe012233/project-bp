@@ -4,6 +4,7 @@ import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAcces
 import com.jyjun.projectbp.domain.developeraccesspermission.model.DeveloperAccessPermission;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DeveloperAccessPermissionRepositoryPort {
 
@@ -15,5 +16,5 @@ public interface DeveloperAccessPermissionRepositoryPort {
 
     List<DeveloperAccessPermission> findByAccountIdAndDeveloperId(Long accountId, Long developerId);
 
-    DeveloperAccessPermission findByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission);
+    Optional<DeveloperAccessPermission> findByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission);
 }

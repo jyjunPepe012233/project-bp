@@ -6,7 +6,7 @@ import com.jyjun.projectbp.domain.developeraccesspermission.model.DeveloperAcces
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Repository
 public class DeveloperAccessPermissionRepositoryAdapter implements DeveloperAccessPermissionRepositoryPort {
@@ -38,8 +38,7 @@ public class DeveloperAccessPermissionRepositoryAdapter implements DeveloperAcce
     }
 
     @Override
-    public DeveloperAccessPermission findByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission) {
-        return jpaDeveloperAccessPermissionRepository.findByAccountIdAndDeveloperIdAndPermission(accountId, developerId, permission)
-                .orElseThrow(() -> new NoSuchElementException("DeveloperAccessPermission not found"));
+    public Optional<DeveloperAccessPermission> findByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission) {
+        return jpaDeveloperAccessPermissionRepository.findByAccountIdAndDeveloperIdAndPermission(accountId, developerId, permission);
     }
 }

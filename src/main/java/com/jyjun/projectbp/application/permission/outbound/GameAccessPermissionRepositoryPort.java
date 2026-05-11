@@ -4,6 +4,7 @@ import com.jyjun.projectbp.domain.gameaccesspermission.enums.GameAccessPermissio
 import com.jyjun.projectbp.domain.gameaccesspermission.model.GameAccessPermission;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GameAccessPermissionRepositoryPort {
 
@@ -15,5 +16,5 @@ public interface GameAccessPermissionRepositoryPort {
 
     List<GameAccessPermission> findByAccountIdAndGameId(Long accountId, Long gameId);
 
-    GameAccessPermission findByAccountIdAndGameIdAndPermission(Long accountId, Long gameId, GameAccessPermissionType permission);
+    Optional<GameAccessPermission> findByAccountIdAndGameIdAndPermission(Long accountId, Long gameId, GameAccessPermissionType permission);
 }

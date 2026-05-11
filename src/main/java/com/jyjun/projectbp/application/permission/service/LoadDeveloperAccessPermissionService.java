@@ -6,6 +6,7 @@ import com.jyjun.projectbp.domain.developeraccesspermission.model.DeveloperAcces
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 public class LoadDeveloperAccessPermissionService {
@@ -24,7 +25,8 @@ public class LoadDeveloperAccessPermissionService {
         return developerAccessPermissionRepositoryPort.findByAccountIdAndDeveloperId(accountId, developerId);
     }
 
-    public DeveloperAccessPermission loadByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission) {
-        return developerAccessPermissionRepositoryPort.findByAccountIdAndDeveloperIdAndPermission(accountId, developerId, permission);
+    public DeveloperAccessPermission loadByAccountIdAndDeveloperIdAndPermissionOrThrow(Long accountId, Long developerId, DeveloperAccessPermissionType permission) {
+        return developerAccessPermissionRepositoryPort.findByAccountIdAndDeveloperIdAndPermission(accountId, developerId, permission)
+                .orElseThrow(() -> new NoSuchElementException("DeveloperAccessPermission not found"));
     }
 }

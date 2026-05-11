@@ -4,6 +4,8 @@ import com.jyjun.projectbp.application.game.outbound.GameRepositoryPort;
 import com.jyjun.projectbp.domain.game.model.Game;
 import org.springframework.stereotype.Component;
 
+import java.util.NoSuchElementException;
+
 @Component
 public class LoadGameService {
 
@@ -13,7 +15,8 @@ public class LoadGameService {
         this.gameRepositoryPort = gameRepositoryPort;
     }
 
-    public Game loadById(Long id) {
-        return gameRepositoryPort.findById(id);
+    public Game loadByIdOrThrow(Long id) {
+        return gameRepositoryPort.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Game not found: id=" + id));
     }
 }
