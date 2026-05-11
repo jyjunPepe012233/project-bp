@@ -21,6 +21,11 @@ public class DeveloperRepositoryAdapter implements DeveloperRepositoryPort {
     }
 
     @Override
+    public Optional<Developer> findById(Long id) {
+        return jpaDeveloperRepository.findById(id);
+    }
+
+    @Override
     public Optional<Developer> findByRootAccountId(Long rootAccountId) {
         return jpaDeveloperRepository.findByRootAccountId(rootAccountId);
     }

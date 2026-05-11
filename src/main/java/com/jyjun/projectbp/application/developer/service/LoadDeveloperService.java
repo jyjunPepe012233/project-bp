@@ -15,6 +15,11 @@ public class LoadDeveloperService {
         this.developerRepositoryPort = developerRepositoryPort;
     }
 
+    public Developer loadByIdOrThrow(Long id) {
+        return developerRepositoryPort.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Developer not found: id=" + id));
+    }
+
     public Developer loadByRootAccountIdOrThrow(Long rootAccountId) {
         return developerRepositoryPort.findByRootAccountId(rootAccountId)
                 .orElseThrow(() -> new NoSuchElementException("Developer not found: rootAccountId=" + rootAccountId));

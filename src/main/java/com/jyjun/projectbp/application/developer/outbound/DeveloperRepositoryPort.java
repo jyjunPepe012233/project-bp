@@ -8,5 +8,7 @@ public interface DeveloperRepositoryPort {
 
     Developer save(Developer developer);
 
+    Optional<Developer> findById(Long id);
+
     Optional<Developer> findByRootAccountId(Long rootAccountId);
 }

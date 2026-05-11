@@ -35,4 +35,8 @@ public class Developer {
     public Long getRootAccountId() {
         return rootAccountId;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }
