@@ -2,10 +2,12 @@ package com.jyjun.projectbp.presentation.account;
 
 import com.jyjun.projectbp.application.account.model.input.CreateAccountInput;
 import com.jyjun.projectbp.application.account.model.input.UpdateAccountInput;
+import com.jyjun.projectbp.application.account.model.input.UpdateAccountPasswordInput;
 import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.model.output.UpdateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountUseCase;
+import com.jyjun.projectbp.application.account.usecase.UpdateAccountPasswordUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +17,12 @@ public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
+    private final UpdateAccountPasswordUseCase updateAccountPasswordUseCase;
 
-    public AccountController(CreateAccountUseCase createAccountUseCase, UpdateAccountUseCase updateAccountUseCase) {
+    public AccountController(CreateAccountUseCase createAccountUseCase, UpdateAccountUseCase updateAccountUseCase, UpdateAccountPasswordUseCase updateAccountPasswordUseCase) {
         this.createAccountUseCase = createAccountUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
+        this.updateAccountPasswordUseCase = updateAccountPasswordUseCase;
     }
 
     // TODO: DTO 리팩토링
@@ -35,5 +39,13 @@ public class AccountController {
             @RequestBody UpdateAccountInput input
     ) {
         return new ResponseData<>(updateAccountUseCase.execute(new UpdateAccountInput(accountId, input.name())));
+    }
+
+    @PatchMapping("/{accountId}/password")
+    public void updateAccountPassword(
+            @PathVariable Long accountId,
+            @RequestBody UpdateAccountPasswordInput input
+    ) {
+        updateAccountPasswordUseCase.execute(new UpdateAccountPasswordInput(accountId, input.password()));
     }
 }
