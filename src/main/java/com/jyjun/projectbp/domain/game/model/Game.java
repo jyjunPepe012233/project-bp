@@ -23,12 +23,16 @@ public class Game {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false, updatable = false)
+    private Long developerId;
+
     public Game() {
     }
 
-    public Game(String title, String description) {
+    public Game(String title, String description, Long developerId) {
         this.title = title;
         this.description = description;
+        this.developerId = developerId;
     }
 
     public Long getId() {
@@ -45,5 +49,9 @@ public class Game {
 
     public String getDescription() {
         return description;
+    }
+
+    public Long getDeveloperId() {
+        return developerId;
     }
 }
