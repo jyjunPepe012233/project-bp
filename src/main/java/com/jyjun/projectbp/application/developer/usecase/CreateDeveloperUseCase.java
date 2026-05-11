@@ -23,7 +23,6 @@ public class CreateDeveloperUseCase {
     public void execute(CreateDeveloperInput input) {
         Account account = createAccountService.create(
                 input.rootAccountName(),
-                input.rootAccountEmail(),
                 input.rootAccountPassword()
         );
         createDeveloperService.create(
