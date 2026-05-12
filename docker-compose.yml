@@ -29,6 +29,13 @@ services:
     volumes:
       - bundle_files:/app/files
 
+  web:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+
 volumes:
   mysql_data:
   bundle_files:
