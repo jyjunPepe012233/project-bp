@@ -10,6 +10,7 @@ import com.jyjun.projectbp.application.account.model.output.UpdateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountListUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountUseCase;
+import com.jyjun.projectbp.application.account.usecase.LoadMyAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadMyPermissionsUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountPasswordUseCase;
@@ -30,6 +31,7 @@ public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
     private final LoadAccountListUseCase loadAccountListUseCase;
+    private final LoadMyAccountUseCase loadMyAccountUseCase;
     private final LoadAccountUseCase loadAccountUseCase;
     private final LoadMyPermissionsUseCase loadMyPermissionsUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
@@ -40,6 +42,7 @@ public class AccountController {
     public AccountController(
             CreateAccountUseCase createAccountUseCase,
             LoadAccountListUseCase loadAccountListUseCase,
+            LoadMyAccountUseCase loadMyAccountUseCase,
             LoadAccountUseCase loadAccountUseCase,
             LoadMyPermissionsUseCase loadMyPermissionsUseCase,
             UpdateAccountUseCase updateAccountUseCase,
@@ -49,6 +52,7 @@ public class AccountController {
     ) {
         this.createAccountUseCase = createAccountUseCase;
         this.loadAccountListUseCase = loadAccountListUseCase;
+        this.loadMyAccountUseCase = loadMyAccountUseCase;
         this.loadAccountUseCase = loadAccountUseCase;
         this.loadMyPermissionsUseCase = loadMyPermissionsUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
@@ -68,6 +72,11 @@ public class AccountController {
     @PostMapping
     public ResponseData<CreateAccountOutput> createAccount(@RequestBody CreateAccountInput input) {
         return new ResponseData<>(createAccountUseCase.execute(input));
+    }
+
+    @GetMapping("/me")
+    public ResponseData<LoadAccountOutput> loadMyAccount() {
+        return new ResponseData<>(loadMyAccountUseCase.execute());
     }
 
     @GetMapping("/me/permissions")
