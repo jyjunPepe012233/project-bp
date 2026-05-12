@@ -11,6 +11,8 @@ import com.jyjun.projectbp.application.patch.model.output.UpdatePatchNoteOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
 import com.jyjun.projectbp.application.patch.usecase.CreatePatchUseCase;
+import com.jyjun.projectbp.application.patch.usecase.DeleteCatalogHashUseCase;
+import com.jyjun.projectbp.application.patch.usecase.DeleteCatalogUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchListUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UpdatePatchNoteUseCase;
@@ -25,7 +27,6 @@ import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
 import java.util.List;
 
 @RestController
@@ -38,6 +39,8 @@ public class PatchController {
     private final UpdatePatchNoteUseCase updatePatchNoteUseCase;
     private final UploadCatalogUseCase uploadCatalogUseCase;
     private final UploadCatalogHashUseCase uploadCatalogHashUseCase;
+    private final DeleteCatalogUseCase deleteCatalogUseCase;
+    private final DeleteCatalogHashUseCase deleteCatalogHashUseCase;
     private final UploadBundleUseCase uploadBundleUseCase;
 
     public PatchController(
@@ -47,6 +50,8 @@ public class PatchController {
             UpdatePatchNoteUseCase updatePatchNoteUseCase,
             UploadCatalogUseCase uploadCatalogUseCase,
             UploadCatalogHashUseCase uploadCatalogHashUseCase,
+            DeleteCatalogUseCase deleteCatalogUseCase,
+            DeleteCatalogHashUseCase deleteCatalogHashUseCase,
             UploadBundleUseCase uploadBundleUseCase
     ) {
         this.createPatchUseCase = createPatchUseCase;
@@ -55,6 +60,8 @@ public class PatchController {
         this.updatePatchNoteUseCase = updatePatchNoteUseCase;
         this.uploadCatalogUseCase = uploadCatalogUseCase;
         this.uploadCatalogHashUseCase = uploadCatalogHashUseCase;
+        this.deleteCatalogUseCase = deleteCatalogUseCase;
+        this.deleteCatalogHashUseCase = deleteCatalogHashUseCase;
         this.uploadBundleUseCase = uploadBundleUseCase;
     }
 
@@ -117,6 +124,16 @@ public class PatchController {
         }
 
         throw new IllegalArgumentException("catalogHash 파일이 필요합니다.");
+    }
+
+    @DeleteMapping("/{patchId}/catalog")
+    public void deleteCatalog(@PathVariable Long patchId) {
+        deleteCatalogUseCase.execute(patchId);
+    }
+
+    @DeleteMapping("/{patchId}/catalog-hash")
+    public void deleteCatalogHash(@PathVariable Long patchId) {
+        deleteCatalogHashUseCase.execute(patchId);
     }
 
     @PostMapping(value = "/{patchId}/bundles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
