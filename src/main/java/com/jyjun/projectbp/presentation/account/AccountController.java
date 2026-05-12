@@ -5,10 +5,12 @@ import com.jyjun.projectbp.application.account.model.input.UpdateAccountInput;
 import com.jyjun.projectbp.application.account.model.input.UpdateAccountPasswordInput;
 import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.model.output.LoadAccountOutput;
+import com.jyjun.projectbp.application.account.model.output.LoadMyPermissionsOutput;
 import com.jyjun.projectbp.application.account.model.output.UpdateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountListUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountUseCase;
+import com.jyjun.projectbp.application.account.usecase.LoadMyPermissionsUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountPasswordUseCase;
 import com.jyjun.projectbp.application.permission.model.input.UpdateDeveloperPermissionInput;
@@ -29,6 +31,7 @@ public class AccountController {
     private final CreateAccountUseCase createAccountUseCase;
     private final LoadAccountListUseCase loadAccountListUseCase;
     private final LoadAccountUseCase loadAccountUseCase;
+    private final LoadMyPermissionsUseCase loadMyPermissionsUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
     private final UpdateAccountPasswordUseCase updateAccountPasswordUseCase;
     private final UpdateDeveloperPermissionUseCase updateDeveloperPermissionUseCase;
@@ -38,6 +41,7 @@ public class AccountController {
             CreateAccountUseCase createAccountUseCase,
             LoadAccountListUseCase loadAccountListUseCase,
             LoadAccountUseCase loadAccountUseCase,
+            LoadMyPermissionsUseCase loadMyPermissionsUseCase,
             UpdateAccountUseCase updateAccountUseCase,
             UpdateAccountPasswordUseCase updateAccountPasswordUseCase,
             UpdateDeveloperPermissionUseCase updateDeveloperPermissionUseCase,
@@ -46,6 +50,7 @@ public class AccountController {
         this.createAccountUseCase = createAccountUseCase;
         this.loadAccountListUseCase = loadAccountListUseCase;
         this.loadAccountUseCase = loadAccountUseCase;
+        this.loadMyPermissionsUseCase = loadMyPermissionsUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
         this.updateAccountPasswordUseCase = updateAccountPasswordUseCase;
         this.updateDeveloperPermissionUseCase = updateDeveloperPermissionUseCase;
@@ -63,6 +68,11 @@ public class AccountController {
     @PostMapping
     public ResponseData<CreateAccountOutput> createAccount(@RequestBody CreateAccountInput input) {
         return new ResponseData<>(createAccountUseCase.execute(input));
+    }
+
+    @GetMapping("/me/permissions")
+    public ResponseData<LoadMyPermissionsOutput> loadMyPermissions() {
+        return new ResponseData<>(loadMyPermissionsUseCase.execute());
     }
 
     @GetMapping("/{accountId}")
