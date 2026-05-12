@@ -4,8 +4,8 @@ import com.jyjun.projectbp.application.auth.service.LoadCurrentAccountService;
 import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
-import com.jyjun.projectbp.application.patch.model.input.UploadCatalogInput;
-import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
+import com.jyjun.projectbp.application.patch.model.input.UploadCatalogHashInput;
+import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.patch.service.SaveCatalogService;
 import com.jyjun.projectbp.application.patch.service.UpdatePatchCatalogService;
@@ -21,7 +21,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UploadCatalogUseCase {
+public class UploadCatalogHashUseCase {
 
     private final LoadCurrentAccountService loadCurrentAccountService;
     private final LoadPatchService loadPatchService;
@@ -33,7 +33,7 @@ public class UploadCatalogUseCase {
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
     private final HasGameAccessPermissionUtil hasGameAccessPermissionUtil;
 
-    public UploadCatalogUseCase(
+    public UploadCatalogHashUseCase(
             LoadCurrentAccountService loadCurrentAccountService,
             LoadPatchService loadPatchService,
             LoadGameService loadGameService,
@@ -55,7 +55,7 @@ public class UploadCatalogUseCase {
     }
 
     @Transactional
-    public UploadCatalogOutput execute(UploadCatalogInput input) {
+    public UploadCatalogHashOutput execute(UploadCatalogHashInput input) {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
         Patch patch = loadPatchService.loadByIdOrThrow(input.patchId());
         Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
@@ -73,14 +73,14 @@ public class UploadCatalogUseCase {
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.MAINTAIN)) {
             // 게임 MAINTAIN 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("카탈로그를 업로드할 권한이 없습니다.");
+            throw new IllegalArgumentException("카탈로그 해시를 업로드할 권한이 없습니다.");
         }
 
         String gameUuid = game.getUuid().toString();
-        saveCatalogService.save(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogFilename(), input.catalogData());
+        saveCatalogService.save(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogHashFilename(), input.catalogHashData());
 
-        Patch updated = updatePatchCatalogService.updateCatalogFileName(input.patchId(), input.catalogFilename());
+        Patch updated = updatePatchCatalogService.updateCatalogHashFileName(input.patchId(), input.catalogHashFilename());
 
-        return new UploadCatalogOutput(updated.getId(), updated.getGameId(), updated.getVersion(), updated.getPlatform(), updated.getPatchNote(), updated.getCatalogFileName());
+        return new UploadCatalogHashOutput(updated.getId(), updated.getGameId(), updated.getVersion(), updated.getPlatform(), updated.getPatchNote(), updated.getCatalogHashFileName());
     }
 }

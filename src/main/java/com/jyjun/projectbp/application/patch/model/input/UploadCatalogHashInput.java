@@ -2,9 +2,9 @@ package com.jyjun.projectbp.application.patch.model.input;
 
 import java.io.InputStream;
 
-public record UploadCatalogInput(
+public record UploadCatalogHashInput(
         Long patchId,
-        String catalogFilename,
-        InputStream catalogData
+        String catalogHashFilename,
+        InputStream catalogHashData
 ) {
 }

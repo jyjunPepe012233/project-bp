@@ -3,16 +3,19 @@ package com.jyjun.projectbp.presentation.patch;
 import com.jyjun.projectbp.application.patch.model.input.CreatePatchInput;
 import com.jyjun.projectbp.application.patch.model.input.UpdatePatchNoteInput;
 import com.jyjun.projectbp.application.patch.model.input.UploadBundleInput;
+import com.jyjun.projectbp.application.patch.model.input.UploadCatalogHashInput;
 import com.jyjun.projectbp.application.patch.model.input.UploadCatalogInput;
 import com.jyjun.projectbp.application.patch.model.output.CreatePatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.UpdatePatchNoteOutput;
+import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
 import com.jyjun.projectbp.application.patch.usecase.CreatePatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchListUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UpdatePatchNoteUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadBundleUseCase;
+import com.jyjun.projectbp.application.patch.usecase.UploadCatalogHashUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +37,7 @@ public class PatchController {
     private final LoadPatchUseCase loadPatchUseCase;
     private final UpdatePatchNoteUseCase updatePatchNoteUseCase;
     private final UploadCatalogUseCase uploadCatalogUseCase;
+    private final UploadCatalogHashUseCase uploadCatalogHashUseCase;
     private final UploadBundleUseCase uploadBundleUseCase;
 
     public PatchController(
@@ -42,6 +46,7 @@ public class PatchController {
             LoadPatchUseCase loadPatchUseCase,
             UpdatePatchNoteUseCase updatePatchNoteUseCase,
             UploadCatalogUseCase uploadCatalogUseCase,
+            UploadCatalogHashUseCase uploadCatalogHashUseCase,
             UploadBundleUseCase uploadBundleUseCase
     ) {
         this.createPatchUseCase = createPatchUseCase;
@@ -49,6 +54,7 @@ public class PatchController {
         this.loadPatchUseCase = loadPatchUseCase;
         this.updatePatchNoteUseCase = updatePatchNoteUseCase;
         this.uploadCatalogUseCase = uploadCatalogUseCase;
+        this.uploadCatalogHashUseCase = uploadCatalogHashUseCase;
         this.uploadBundleUseCase = uploadBundleUseCase;
     }
 
@@ -83,30 +89,34 @@ public class PatchController {
         JakartaServletFileUpload upload = new JakartaServletFileUpload();
         FileItemInputIterator iterator = upload.getItemIterator(request);
 
-        String catalogFilename = null;
-        InputStream catalogData = null;
-        String catalogHashFilename = null;
-        InputStream catalogHashData = null;
-
         while (iterator.hasNext()) {
             FileItemInput item = iterator.next();
-            if (item.isFormField()) continue;
-
-            if ("catalog".equals(item.getFieldName())) {
-                catalogFilename = item.getName();
-                catalogData = item.getInputStream();
-            } else if ("catalogHash".equals(item.getFieldName())) {
-                catalogHashFilename = item.getName();
-                catalogHashData = item.getInputStream();
+            if (!item.isFormField()) {
+                UploadCatalogInput input = new UploadCatalogInput(patchId, item.getName(), item.getInputStream());
+                return new ResponseData<>(uploadCatalogUseCase.execute(input));
             }
         }
 
-        if (catalogFilename == null || catalogHashFilename == null) {
-            throw new IllegalArgumentException("catalog, catalogHash 파일이 모두 필요합니다.");
+        throw new IllegalArgumentException("catalog 파일이 필요합니다.");
+    }
+
+    @PostMapping(value = "/{patchId}/catalog-hash", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseData<UploadCatalogHashOutput> uploadCatalogHash(
+            @PathVariable Long patchId,
+            HttpServletRequest request
+    ) throws Exception {
+        JakartaServletFileUpload upload = new JakartaServletFileUpload();
+        FileItemInputIterator iterator = upload.getItemIterator(request);
+
+        while (iterator.hasNext()) {
+            FileItemInput item = iterator.next();
+            if (!item.isFormField()) {
+                UploadCatalogHashInput input = new UploadCatalogHashInput(patchId, item.getName(), item.getInputStream());
+                return new ResponseData<>(uploadCatalogHashUseCase.execute(input));
+            }
         }
 
-        UploadCatalogInput input = new UploadCatalogInput(patchId, catalogFilename, catalogData, catalogHashFilename, catalogHashData);
-        return new ResponseData<>(uploadCatalogUseCase.execute(input));
+        throw new IllegalArgumentException("catalogHash 파일이 필요합니다.");
     }
 
     @PostMapping(value = "/{patchId}/bundles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
