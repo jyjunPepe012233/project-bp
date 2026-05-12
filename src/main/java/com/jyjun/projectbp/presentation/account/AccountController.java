@@ -10,6 +10,7 @@ import com.jyjun.projectbp.application.account.model.output.UpdateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountListUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountUseCase;
+import com.jyjun.projectbp.application.account.usecase.LoadAccountPermissionsUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadMyAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadMyPermissionsUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountUseCase;
@@ -33,6 +34,7 @@ public class AccountController {
     private final LoadAccountListUseCase loadAccountListUseCase;
     private final LoadMyAccountUseCase loadMyAccountUseCase;
     private final LoadAccountUseCase loadAccountUseCase;
+    private final LoadAccountPermissionsUseCase loadAccountPermissionsUseCase;
     private final LoadMyPermissionsUseCase loadMyPermissionsUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
     private final UpdateAccountPasswordUseCase updateAccountPasswordUseCase;
@@ -44,6 +46,7 @@ public class AccountController {
             LoadAccountListUseCase loadAccountListUseCase,
             LoadMyAccountUseCase loadMyAccountUseCase,
             LoadAccountUseCase loadAccountUseCase,
+            LoadAccountPermissionsUseCase loadAccountPermissionsUseCase,
             LoadMyPermissionsUseCase loadMyPermissionsUseCase,
             UpdateAccountUseCase updateAccountUseCase,
             UpdateAccountPasswordUseCase updateAccountPasswordUseCase,
@@ -54,6 +57,7 @@ public class AccountController {
         this.loadAccountListUseCase = loadAccountListUseCase;
         this.loadMyAccountUseCase = loadMyAccountUseCase;
         this.loadAccountUseCase = loadAccountUseCase;
+        this.loadAccountPermissionsUseCase = loadAccountPermissionsUseCase;
         this.loadMyPermissionsUseCase = loadMyPermissionsUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
         this.updateAccountPasswordUseCase = updateAccountPasswordUseCase;
@@ -87,6 +91,11 @@ public class AccountController {
     @GetMapping("/{accountId}")
     public ResponseData<LoadAccountOutput> loadAccount(@PathVariable Long accountId) {
         return new ResponseData<>(loadAccountUseCase.execute(accountId));
+    }
+
+    @GetMapping("/{accountId}/permissions")
+    public ResponseData<LoadMyPermissionsOutput> loadAccountPermissions(@PathVariable Long accountId) {
+        return new ResponseData<>(loadAccountPermissionsUseCase.execute(accountId));
     }
 
     @PatchMapping("/{accountId}")
