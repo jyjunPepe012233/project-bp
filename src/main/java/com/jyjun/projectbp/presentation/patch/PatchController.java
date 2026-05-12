@@ -5,9 +5,11 @@ import com.jyjun.projectbp.application.patch.model.input.UpdatePatchNoteInput;
 import com.jyjun.projectbp.application.patch.model.input.UploadBundleInput;
 import com.jyjun.projectbp.application.patch.model.input.UploadCatalogInput;
 import com.jyjun.projectbp.application.patch.model.output.CreatePatchOutput;
+import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.UpdatePatchNoteOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
 import com.jyjun.projectbp.application.patch.usecase.CreatePatchUseCase;
+import com.jyjun.projectbp.application.patch.usecase.LoadPatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UpdatePatchNoteUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadBundleUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogUseCase;
@@ -26,17 +28,20 @@ import java.io.InputStream;
 public class PatchController {
 
     private final CreatePatchUseCase createPatchUseCase;
+    private final LoadPatchUseCase loadPatchUseCase;
     private final UpdatePatchNoteUseCase updatePatchNoteUseCase;
     private final UploadCatalogUseCase uploadCatalogUseCase;
     private final UploadBundleUseCase uploadBundleUseCase;
 
     public PatchController(
             CreatePatchUseCase createPatchUseCase,
+            LoadPatchUseCase loadPatchUseCase,
             UpdatePatchNoteUseCase updatePatchNoteUseCase,
             UploadCatalogUseCase uploadCatalogUseCase,
             UploadBundleUseCase uploadBundleUseCase
     ) {
         this.createPatchUseCase = createPatchUseCase;
+        this.loadPatchUseCase = loadPatchUseCase;
         this.updatePatchNoteUseCase = updatePatchNoteUseCase;
         this.uploadCatalogUseCase = uploadCatalogUseCase;
         this.uploadBundleUseCase = uploadBundleUseCase;
@@ -45,6 +50,11 @@ public class PatchController {
     @PostMapping
     public ResponseData<CreatePatchOutput> createPatch(@PathVariable Long gameId, @RequestBody CreatePatchInput input) {
         return new ResponseData<>(createPatchUseCase.execute(new CreatePatchInput(gameId, input.version(), input.platform(), input.patchNote())));
+    }
+
+    @GetMapping("/{patchId}")
+    public ResponseData<LoadPatchOutput> loadPatch(@PathVariable Long gameId, @PathVariable Long patchId) {
+        return new ResponseData<>(loadPatchUseCase.execute(gameId, patchId));
     }
 
     @PatchMapping("/{patchId}")
