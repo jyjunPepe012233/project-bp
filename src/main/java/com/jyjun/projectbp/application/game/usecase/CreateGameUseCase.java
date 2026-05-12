@@ -8,6 +8,7 @@ import com.jyjun.projectbp.application.game.model.output.CreateGameOutput;
 import com.jyjun.projectbp.application.game.service.CreateGameService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
 import com.jyjun.projectbp.domain.game.model.Game;
 import jakarta.transaction.Transactional;
@@ -47,7 +48,7 @@ public class CreateGameUseCase {
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.PUBLISHER)) {
             // 개발자 PUBLISHER 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("게임을 등록할 권한이 없습니다.");
+            throw new AccessDeniedException("게임을 등록할 권한이 없습니다.");
         }
 
         Game game = createGameService.create(input.title(), input.description(), developerId);

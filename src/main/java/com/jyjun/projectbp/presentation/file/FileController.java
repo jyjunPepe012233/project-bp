@@ -3,6 +3,7 @@ package com.jyjun.projectbp.presentation.file;
 import com.jyjun.projectbp.application.file.usecase.DownloadFileUseCase;
 import com.jyjun.projectbp.application.file.usecase.UploadFileUseCase;
 import com.jyjun.projectbp.application.file.model.output.DownloadFileOutput;
+import com.jyjun.projectbp.common.exception.MissingFileException;
 import com.jyjun.projectbp.domain.filemeta.model.FileMeta;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload2.core.FileItemInput;
@@ -50,7 +51,7 @@ public class FileController {
             }
         }
 
-        throw new IllegalArgumentException("요청에 파일 파트가 없습니다.");
+        throw new MissingFileException("요청에 파일 파트가 없습니다.");
     }
 
     @GetMapping("/{originalName}")

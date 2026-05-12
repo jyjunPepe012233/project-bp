@@ -4,9 +4,10 @@ import com.jyjun.projectbp.application.patch.outbound.AddressableFileStoragePort
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.jyjun.projectbp.common.exception.FileStorageException;
+import com.jyjun.projectbp.common.exception.InvalidPathException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +26,7 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
         try {
             Files.createDirectories(this.patchesDir);
         } catch (IOException e) {
-            throw new UncheckedIOException("패치 파일 저장 디렉토리 생성 실패", e);
+            throw new FileStorageException("패치 파일 저장 디렉토리 생성 실패", e);
         }
     }
 
@@ -41,7 +42,7 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
             Files.createDirectories(targetDir);
             Files.copy(data, targetDir.resolve(filename));
         } catch (IOException e) {
-            throw new UncheckedIOException("카탈로그 파일 저장 실패: " + filename, e);
+            throw new FileStorageException("카탈로그 파일 저장 실패: " + filename, e);
         }
     }
 
@@ -56,7 +57,7 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
         try {
             Files.deleteIfExists(target);
         } catch (IOException e) {
-            throw new UncheckedIOException("카탈로그 파일 삭제 실패: " + filename, e);
+            throw new FileStorageException("카탈로그 파일 삭제 실패: " + filename, e);
         }
     }
 
@@ -72,7 +73,7 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
             Files.createDirectories(targetDir);
             Files.copy(data, targetDir.resolve(filename));
         } catch (IOException e) {
-            throw new UncheckedIOException("번들 파일 저장 실패: " + filename, e);
+            throw new FileStorageException("번들 파일 저장 실패: " + filename, e);
         }
     }
 
@@ -87,7 +88,7 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
         try {
             Files.deleteIfExists(target);
         } catch (IOException e) {
-            throw new UncheckedIOException("번들 파일 삭제 실패: " + filename, e);
+            throw new FileStorageException("번들 파일 삭제 실패: " + filename, e);
         }
     }
 
@@ -109,17 +110,17 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
                     .sorted()
                     .toList();
         } catch (IOException e) {
-            throw new UncheckedIOException("번들 파일 목록 조회 실패", e);
+            throw new FileStorageException("번들 파일 목록 조회 실패", e);
         }
     }
 
     // (../, / 등) 방지
     private void validatePathSegment(String segment) {
         if (segment == null || segment.isBlank()) {
-            throw new IllegalArgumentException("경로 세그먼트가 비어있습니다.");
+            throw new InvalidPathException("경로 세그먼트가 비어있습니다.");
         }
         if (segment.contains("..") || segment.contains("/") || segment.contains("\\")) {
-            throw new IllegalArgumentException("허용되지 않는 경로 세그먼트입니다: " + segment);
+            throw new InvalidPathException("허용되지 않는 경로 세그먼트입니다: " + segment);
         }
     }
 }

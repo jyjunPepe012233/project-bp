@@ -21,17 +21,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
-        String message = e.getBindingResult().getFieldErrors().stream()
-                .map(f -> f.getField() + ": " + f.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-        ErrorResponse body = new ErrorResponse(400, "VALIDATION_ERROR", message);
-        return ResponseEntity.badRequest().body(body);
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
-        ErrorResponse body = new ErrorResponse(400, "TYPE_MISMATCH",
-                "파라미터 '" + e.getName() + "'의 타입이 올바르지 않습니다.");
+        String message = e.getMessage();
+        ErrorResponse body = new ErrorResponse(400, "VALIDATION_ERROR", message); // error 필드를 임의로 정함
         return ResponseEntity.badRequest().body(body);
     }
 }

@@ -1,6 +1,7 @@
 package com.jyjun.projectbp.infrastructure.auth;
 
 import com.jyjun.projectbp.application.auth.outbound.ValidateAccessTokenPort;
+import com.jyjun.projectbp.common.exception.InvalidTokenException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -30,7 +31,7 @@ public class JwtValidateAccessTokenAdapter implements ValidateAccessTokenPort {
                     .getSubject();
             return Long.valueOf(subject);
         } catch (JwtException | IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid access token", e);
+            throw new InvalidTokenException("Invalid access token", e);
         }
     }
 }

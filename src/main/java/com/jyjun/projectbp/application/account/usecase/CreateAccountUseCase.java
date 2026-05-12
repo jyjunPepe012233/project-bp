@@ -15,6 +15,8 @@ import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPer
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
 import com.jyjun.projectbp.application.permission.util.HasGameAccessPermissionUtil;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
+import com.jyjun.projectbp.common.exception.InvalidRequestException;
 import com.jyjun.projectbp.domain.account.model.Account;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
 import com.jyjun.projectbp.domain.game.model.Game;
@@ -61,7 +63,7 @@ public class CreateAccountUseCase {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
 
         if (input.developerAccessPermissions().isEmpty() && input.gameAccessPermissions().isEmpty()) {
-            throw new IllegalArgumentException("계정에는 최소 하나 이상의 권한이 필요합니다.");
+            throw new InvalidRequestException("계정에는 최소 하나 이상의 권한이 필요합니다.");
         }
 
         // 계정을 먼저 생성하고, 해당 계정이 어떤 Developer나 Game에 연결할지는 아래 루프에서 검증하면서 연결할 것임
@@ -76,7 +78,7 @@ public class CreateAccountUseCase {
             } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.ADMIN)) {
                 // 개발자 ADMIN 권한 있으면 통과
             } else {
-                throw new IllegalArgumentException("개발자 접근 권한을 부여할 권한이 없습니다. (개발자 ID: " + developerId + ")");
+                throw new AccessDeniedException("개발자 접근 권한을 부여할 권한이 없습니다. (개발자 ID: " + developerId + ")");
             }
 
             for (DeveloperAccessPermissionType permission : entry.permissions()) {
@@ -96,7 +98,7 @@ public class CreateAccountUseCase {
             } else if (hasGameAccessPermissionUtil.has(currentAccountId, entry.gameId(), GameAccessPermissionType.ADMIN)) {
                 // 게임 ADMIN 권한 있으면 통과
             } else {
-                throw new IllegalArgumentException("게임 접근 권한을 부여할 권한이 없습니다. (게임 ID: " + entry.gameId() + ")");
+                throw new AccessDeniedException("게임 접근 권한을 부여할 권한이 없습니다. (게임 ID: " + entry.gameId() + ")");
             }
 
             for (GameAccessPermissionType permission : entry.permissions()) {

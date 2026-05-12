@@ -10,6 +10,7 @@ import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.domain.account.model.Account;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class UpdateAccountUseCase {
         } else if (isRootOrDeveloperAdminOrGameAdminUtil.is(currentAccountId, input.accountId())) {
             // 게임 단위 계정 관리 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("계정을 수정할 권한이 없습니다.");
+            throw new AccessDeniedException("계정을 수정할 권한이 없습니다.");
         }
 
         Account updated = updateAccountService.updateName(input.accountId(), input.name());

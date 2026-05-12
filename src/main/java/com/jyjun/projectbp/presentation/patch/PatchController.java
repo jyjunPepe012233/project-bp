@@ -22,6 +22,7 @@ import com.jyjun.projectbp.application.patch.usecase.UploadBundleUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogHashUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
+import com.jyjun.projectbp.common.exception.MissingFileException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
@@ -115,7 +116,7 @@ public class PatchController {
             }
         }
 
-        throw new IllegalArgumentException("catalog 파일이 필요합니다.");
+        throw new MissingFileException("catalog 파일이 필요합니다.");
     }
 
     @PostMapping(value = "/{patchId}/catalog-hash", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -134,7 +135,7 @@ public class PatchController {
             }
         }
 
-        throw new IllegalArgumentException("catalogHash 파일이 필요합니다.");
+        throw new MissingFileException("catalogHash 파일이 필요합니다.");
     }
 
     @DeleteMapping("/{patchId}/catalog")
@@ -168,6 +169,6 @@ public class PatchController {
             }
         }
 
-        throw new IllegalArgumentException("요청에 파일 파트가 없습니다.");
+        throw new MissingFileException("요청에 파일 파트가 없습니다.");
     }
 }

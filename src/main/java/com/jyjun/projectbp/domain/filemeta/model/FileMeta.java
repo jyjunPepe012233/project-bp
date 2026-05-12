@@ -1,5 +1,6 @@
 package com.jyjun.projectbp.domain.filemeta.model;
 
+import com.jyjun.projectbp.common.exception.InvalidRequestException;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 
@@ -34,7 +35,7 @@ public class FileMeta {
     public FileMeta(String originalName, String storedName, long sizeByte) {
 
         if (StringUtils.isBlank(originalName)) {
-            throw new IllegalArgumentException("Original name must not be null or blank");
+            throw new InvalidRequestException("Original name must not be null or blank");
         }
 
         this.originalName = originalName;

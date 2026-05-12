@@ -7,6 +7,7 @@ import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUt
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
 import com.jyjun.projectbp.domain.developer.model.Developer;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class LoadDeveloperUseCase {
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.PUBLISHER)) {
             // 개발자 PUBLISHER 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("개발자 정보를 조회할 권한이 없습니다.");
+            throw new AccessDeniedException("개발자 정보를 조회할 권한이 없습니다.");
         }
 
         Developer developer = loadDeveloperService.loadByIdOrThrow(developerId);

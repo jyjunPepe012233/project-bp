@@ -9,6 +9,7 @@ import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.domain.account.model.Account;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,7 @@ public class LoadAccountUseCase {
         } else if (isManagerOfGameAccountUtil.is(currentAccountId, accountId)) {
             // 게임 단위 계정 관리 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("계정 정보를 조회할 권한이 없습니다.");
+            throw new AccessDeniedException("계정 정보를 조회할 권한이 없습니다.");
         }
 
         Account account = loadAccountService.loadByIdOrThrow(accountId);
