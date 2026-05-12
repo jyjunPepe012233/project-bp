@@ -70,6 +70,10 @@ public class Patch {
         return patchNote;
     }
 
+    public void setPatchNote(String patchNote) {
+        this.patchNote = patchNote;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
