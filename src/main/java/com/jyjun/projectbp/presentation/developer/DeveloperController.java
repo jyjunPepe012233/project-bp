@@ -5,23 +5,38 @@ import com.jyjun.projectbp.application.developer.model.input.UpdateDeveloperInpu
 import com.jyjun.projectbp.application.developer.model.output.LoadDeveloperOutput;
 import com.jyjun.projectbp.application.developer.model.output.UpdateDeveloperOutput;
 import com.jyjun.projectbp.application.developer.usecase.CreateDeveloperUseCase;
+import com.jyjun.projectbp.application.developer.usecase.LoadDeveloperListUseCase;
 import com.jyjun.projectbp.application.developer.usecase.LoadDeveloperUseCase;
 import com.jyjun.projectbp.application.developer.usecase.UpdateDeveloperUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/developers")
 public class DeveloperController {
 
     private final CreateDeveloperUseCase createDeveloperUseCase;
+    private final LoadDeveloperListUseCase loadDeveloperListUseCase;
     private final LoadDeveloperUseCase loadDeveloperUseCase;
     private final UpdateDeveloperUseCase updateDeveloperUseCase;
 
-    public DeveloperController(CreateDeveloperUseCase createDeveloperUseCase, LoadDeveloperUseCase loadDeveloperUseCase, UpdateDeveloperUseCase updateDeveloperUseCase) {
+    public DeveloperController(
+            CreateDeveloperUseCase createDeveloperUseCase,
+            LoadDeveloperListUseCase loadDeveloperListUseCase,
+            LoadDeveloperUseCase loadDeveloperUseCase,
+            UpdateDeveloperUseCase updateDeveloperUseCase
+    ) {
         this.createDeveloperUseCase = createDeveloperUseCase;
+        this.loadDeveloperListUseCase = loadDeveloperListUseCase;
         this.loadDeveloperUseCase = loadDeveloperUseCase;
         this.updateDeveloperUseCase = updateDeveloperUseCase;
+    }
+
+    @GetMapping
+    public ResponseData<List<LoadDeveloperOutput>> loadDeveloperList() {
+        return new ResponseData<>(loadDeveloperListUseCase.execute());
     }
 
     @PostMapping

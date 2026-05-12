@@ -4,6 +4,7 @@ import com.jyjun.projectbp.application.patch.outbound.PatchRepositoryPort;
 import com.jyjun.projectbp.domain.patch.model.Patch;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,5 +24,10 @@ public class PatchRepositoryAdapter implements PatchRepositoryPort {
     @Override
     public Optional<Patch> findById(Long id) {
         return jpaPatchRepository.findById(id);
+    }
+
+    @Override
+    public List<Patch> findByGameId(Long gameId) {
+        return jpaPatchRepository.findByGameId(gameId);
     }
 }

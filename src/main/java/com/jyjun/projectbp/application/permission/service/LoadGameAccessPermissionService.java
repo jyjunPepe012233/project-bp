@@ -21,6 +21,10 @@ public class LoadGameAccessPermissionService {
         return gameAccessPermissionRepositoryPort.findByAccountId(accountId);
     }
 
+    public List<GameAccessPermission> loadByGameId(Long gameId) {
+        return gameAccessPermissionRepositoryPort.findByGameId(gameId);
+    }
+
     public List<GameAccessPermission> loadByAccountIdAndGameId(Long accountId, Long gameId) {
         return gameAccessPermissionRepositoryPort.findByAccountIdAndGameId(accountId, gameId);
     }

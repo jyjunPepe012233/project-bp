@@ -4,6 +4,7 @@ import com.jyjun.projectbp.application.account.outbound.AccountRepositoryPort;
 import com.jyjun.projectbp.domain.account.model.Account;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component
@@ -23,5 +24,9 @@ public class LoadAccountService {
     public Account loadByNameOrThrow(String name) {
         return accountRepositoryPort.findByName(name)
                 .orElseThrow(() -> new NoSuchElementException("Account not found: " + name));
+    }
+
+    public List<Account> loadAllByIds(List<Long> ids) {
+        return accountRepositoryPort.findAllByIds(ids);
     }
 }

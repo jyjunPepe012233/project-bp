@@ -33,6 +33,11 @@ public class GameAccessPermissionRepositoryAdapter implements GameAccessPermissi
     }
 
     @Override
+    public List<GameAccessPermission> findByGameId(Long gameId) {
+        return jpaGameAccessPermissionRepository.findByGameId(gameId);
+    }
+
+    @Override
     public List<GameAccessPermission> findByAccountIdAndGameId(Long accountId, Long gameId) {
         return jpaGameAccessPermissionRepository.findByAccountIdAndGameId(accountId, gameId);
     }

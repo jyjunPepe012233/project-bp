@@ -7,6 +7,7 @@ import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.model.output.LoadAccountOutput;
 import com.jyjun.projectbp.application.account.model.output.UpdateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
+import com.jyjun.projectbp.application.account.usecase.LoadAccountListUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.UpdateAccountPasswordUseCase;
@@ -19,11 +20,14 @@ import com.jyjun.projectbp.application.permission.usecase.UpdateGamePermissionUs
 import com.jyjun.projectbp.common.dto.ResponseData;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
+    private final LoadAccountListUseCase loadAccountListUseCase;
     private final LoadAccountUseCase loadAccountUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
     private final UpdateAccountPasswordUseCase updateAccountPasswordUseCase;
@@ -32,6 +36,7 @@ public class AccountController {
 
     public AccountController(
             CreateAccountUseCase createAccountUseCase,
+            LoadAccountListUseCase loadAccountListUseCase,
             LoadAccountUseCase loadAccountUseCase,
             UpdateAccountUseCase updateAccountUseCase,
             UpdateAccountPasswordUseCase updateAccountPasswordUseCase,
@@ -39,11 +44,17 @@ public class AccountController {
             UpdateGamePermissionUseCase updateGamePermissionUseCase
     ) {
         this.createAccountUseCase = createAccountUseCase;
+        this.loadAccountListUseCase = loadAccountListUseCase;
         this.loadAccountUseCase = loadAccountUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
         this.updateAccountPasswordUseCase = updateAccountPasswordUseCase;
         this.updateDeveloperPermissionUseCase = updateDeveloperPermissionUseCase;
         this.updateGamePermissionUseCase = updateGamePermissionUseCase;
+    }
+
+    @GetMapping
+    public ResponseData<List<LoadAccountOutput>> loadAccountList() {
+        return new ResponseData<>(loadAccountListUseCase.execute());
     }
 
     // TODO: DTO 리팩토링

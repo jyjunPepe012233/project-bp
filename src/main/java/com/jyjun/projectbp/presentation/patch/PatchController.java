@@ -9,6 +9,7 @@ import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.UpdatePatchNoteOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
 import com.jyjun.projectbp.application.patch.usecase.CreatePatchUseCase;
+import com.jyjun.projectbp.application.patch.usecase.LoadPatchListUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UpdatePatchNoteUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadBundleUseCase;
@@ -22,12 +23,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.InputStream;
+import java.util.List;
 
 @RestController
 @RequestMapping("/games/{gameId}/patches")
 public class PatchController {
 
     private final CreatePatchUseCase createPatchUseCase;
+    private final LoadPatchListUseCase loadPatchListUseCase;
     private final LoadPatchUseCase loadPatchUseCase;
     private final UpdatePatchNoteUseCase updatePatchNoteUseCase;
     private final UploadCatalogUseCase uploadCatalogUseCase;
@@ -35,16 +38,23 @@ public class PatchController {
 
     public PatchController(
             CreatePatchUseCase createPatchUseCase,
+            LoadPatchListUseCase loadPatchListUseCase,
             LoadPatchUseCase loadPatchUseCase,
             UpdatePatchNoteUseCase updatePatchNoteUseCase,
             UploadCatalogUseCase uploadCatalogUseCase,
             UploadBundleUseCase uploadBundleUseCase
     ) {
         this.createPatchUseCase = createPatchUseCase;
+        this.loadPatchListUseCase = loadPatchListUseCase;
         this.loadPatchUseCase = loadPatchUseCase;
         this.updatePatchNoteUseCase = updatePatchNoteUseCase;
         this.uploadCatalogUseCase = uploadCatalogUseCase;
         this.uploadBundleUseCase = uploadBundleUseCase;
+    }
+
+    @GetMapping
+    public ResponseData<List<LoadPatchOutput>> loadPatchList(@PathVariable Long gameId) {
+        return new ResponseData<>(loadPatchListUseCase.execute(gameId));
     }
 
     @PostMapping

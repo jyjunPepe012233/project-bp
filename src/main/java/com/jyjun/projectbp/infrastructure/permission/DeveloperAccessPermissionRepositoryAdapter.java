@@ -33,6 +33,11 @@ public class DeveloperAccessPermissionRepositoryAdapter implements DeveloperAcce
     }
 
     @Override
+    public List<DeveloperAccessPermission> findByDeveloperId(Long developerId) {
+        return jpaDeveloperAccessPermissionRepository.findByDeveloperId(developerId);
+    }
+
+    @Override
     public List<DeveloperAccessPermission> findByAccountIdAndDeveloperId(Long accountId, Long developerId) {
         return jpaDeveloperAccessPermissionRepository.findByAccountIdAndDeveloperId(accountId, developerId);
     }
