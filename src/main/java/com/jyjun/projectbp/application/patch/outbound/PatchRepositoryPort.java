@@ -2,7 +2,11 @@ package com.jyjun.projectbp.application.patch.outbound;
 
 import com.jyjun.projectbp.domain.patch.model.Patch;
 
+import java.util.Optional;
+
 public interface PatchRepositoryPort {
 
     Patch save(Patch patch);
+
+    Optional<Patch> findById(Long id);
 }

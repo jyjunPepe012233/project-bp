@@ -4,6 +4,8 @@ import com.jyjun.projectbp.application.patch.outbound.PatchRepositoryPort;
 import com.jyjun.projectbp.domain.patch.model.Patch;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class PatchRepositoryAdapter implements PatchRepositoryPort {
 
@@ -16,5 +18,10 @@ public class PatchRepositoryAdapter implements PatchRepositoryPort {
     @Override
     public Patch save(Patch patch) {
         return jpaPatchRepository.save(patch);
+    }
+
+    @Override
+    public Optional<Patch> findById(Long id) {
+        return jpaPatchRepository.findById(id);
     }
 }
