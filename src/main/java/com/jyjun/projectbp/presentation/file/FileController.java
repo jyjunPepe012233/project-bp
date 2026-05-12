@@ -15,8 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/files")
+// File 도메인은 현재 사용하지 않음. (패치 파일 관리는 Patch 도메인에서 담당)
+//@RestController
+//@RequestMapping("/files")
 public class FileController {
 
     private final DownloadFileUseCase downloadFileUseCase;
