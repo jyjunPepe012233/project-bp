@@ -17,7 +17,7 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     private final Path patchesDir;
 
     public AddressableFileStorageAdapter(@Value("${file.storage.base-dir}") String baseDir) {
-        this.patchesDir = Paths.get(baseDir, "addressables");
+        this.patchesDir = Paths.get(baseDir, "bundles");
 
         try {
             Files.createDirectories(this.patchesDir);
@@ -27,7 +27,7 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     }
 
     @Override
-    public void save(String gameUuid, String version, String platform, String filename, InputStream data) {
+    public void saveCatalog(String gameUuid, String version, String platform, String filename, InputStream data) {
         validatePathSegment(version);
         validatePathSegment(platform);
         validatePathSegment(filename);
@@ -36,14 +36,14 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
 
         try {
             Files.createDirectories(targetDir);
-            Files.copy(data, targetDir.resolve(filename)); // 충돌 나면 예외 뜸
+            Files.copy(data, targetDir.resolve(filename));
         } catch (IOException e) {
-            throw new UncheckedIOException("패치 파일 저장 실패: " + filename, e);
+            throw new UncheckedIOException("카탈로그 파일 저장 실패: " + filename, e);
         }
     }
 
     @Override
-    public void delete(String gameUuid, String version, String platform, String filename) {
+    public void deleteCatalog(String gameUuid, String version, String platform, String filename) {
         validatePathSegment(version);
         validatePathSegment(platform);
         validatePathSegment(filename);
@@ -53,7 +53,38 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
         try {
             Files.deleteIfExists(target);
         } catch (IOException e) {
-            throw new UncheckedIOException("패치 파일 삭제 실패: " + filename, e);
+            throw new UncheckedIOException("카탈로그 파일 삭제 실패: " + filename, e);
+        }
+    }
+
+    @Override
+    public void saveBundle(String gameUuid, String version, String platform, String filename, InputStream data) {
+        validatePathSegment(version);
+        validatePathSegment(platform);
+        validatePathSegment(filename);
+
+        Path targetDir = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve("bundles");
+
+        try {
+            Files.createDirectories(targetDir);
+            Files.copy(data, targetDir.resolve(filename));
+        } catch (IOException e) {
+            throw new UncheckedIOException("번들 파일 저장 실패: " + filename, e);
+        }
+    }
+
+    @Override
+    public void deleteBundle(String gameUuid, String version, String platform, String filename) {
+        validatePathSegment(version);
+        validatePathSegment(platform);
+        validatePathSegment(filename);
+
+        Path target = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve("bundles").resolve(filename);
+
+        try {
+            Files.deleteIfExists(target);
+        } catch (IOException e) {
+            throw new UncheckedIOException("번들 파일 삭제 실패: " + filename, e);
         }
     }
 

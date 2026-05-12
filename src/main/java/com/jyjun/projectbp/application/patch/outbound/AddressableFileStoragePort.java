@@ -4,7 +4,11 @@ import java.io.InputStream;
 
 public interface AddressableFileStoragePort {
 
-    void save(String gameUuid, String version, String platform, String filename, InputStream data);
+    void saveCatalog(String gameUuid, String version, String platform, String filename, InputStream data);
 
-    void delete(String gameUuid, String version, String platform, String filename);
+    void deleteCatalog(String gameUuid, String version, String platform, String filename);
+
+    void saveBundle(String gameUuid, String version, String platform, String filename, InputStream data);
+
+    void deleteBundle(String gameUuid, String version, String platform, String filename);
 }
