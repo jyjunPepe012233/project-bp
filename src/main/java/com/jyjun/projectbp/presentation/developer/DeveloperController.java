@@ -9,6 +9,7 @@ import com.jyjun.projectbp.application.developer.usecase.LoadDeveloperListUseCas
 import com.jyjun.projectbp.application.developer.usecase.LoadDeveloperUseCase;
 import com.jyjun.projectbp.application.developer.usecase.UpdateDeveloperUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class DeveloperController {
     }
 
     @PostMapping
-    public void createDeveloper(@RequestBody CreateDeveloperInput input) {
+    public void createDeveloper(@Valid @RequestBody CreateDeveloperInput input) {
         // Response나 Request DTO 쓰는 대신 Application 계층의 Input, Output 그대로 쓸거임. DTO 쓰는 곳은 다 고칠 것
         createDeveloperUseCase.execute(input);
     }
@@ -53,7 +54,7 @@ public class DeveloperController {
     @PatchMapping("/{developerId}")
     public ResponseData<UpdateDeveloperOutput> updateDeveloper(
             @PathVariable Long developerId,
-            @RequestBody UpdateDeveloperInput input
+            @Valid @RequestBody UpdateDeveloperInput input
     ) {
         return new ResponseData<>(updateDeveloperUseCase.execute(new UpdateDeveloperInput(developerId, input.name())));
     }

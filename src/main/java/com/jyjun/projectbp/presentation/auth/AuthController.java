@@ -7,6 +7,7 @@ import com.jyjun.projectbp.application.auth.model.output.ReissueAccessTokenOutpu
 import com.jyjun.projectbp.application.auth.usecase.LoginUseCase;
 import com.jyjun.projectbp.application.auth.usecase.ReissueAccessTokenUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +26,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseData<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseData<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginOutput output = loginUseCase.execute(new LoginInput(request.name(), request.password()));
         return new ResponseData<>(new LoginResponse(output));
     }
 
     @PostMapping("/reissue")
-    public ResponseData<ReissueAccessTokenResponse> reissue(@RequestBody ReissueAccessTokenRequest request) {
+    public ResponseData<ReissueAccessTokenResponse> reissue(@Valid @RequestBody ReissueAccessTokenRequest request) {
         ReissueAccessTokenOutput output = reissueAccessTokenUseCase.execute(
                 new ReissueAccessTokenInput(request.refreshToken())
         );

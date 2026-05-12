@@ -24,6 +24,7 @@ import com.jyjun.projectbp.application.patch.usecase.UploadCatalogUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
 import com.jyjun.projectbp.common.exception.MissingFileException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
@@ -77,7 +78,7 @@ public class PatchController {
     }
 
     @PostMapping
-    public ResponseData<CreatePatchOutput> createPatch(@PathVariable Long gameId, @RequestBody CreatePatchInput input) {
+    public ResponseData<CreatePatchOutput> createPatch(@PathVariable Long gameId, @Valid @RequestBody CreatePatchInput input) {
         return new ResponseData<>(createPatchUseCase.execute(new CreatePatchInput(gameId, input.version(), input.platform(), input.patchNote())));
     }
 
@@ -89,7 +90,7 @@ public class PatchController {
     @PatchMapping("/{patchId}")
     public ResponseData<UpdatePatchNoteOutput> updatePatchNote(
             @PathVariable Long patchId,
-            @RequestBody UpdatePatchNoteInput input
+            @Valid @RequestBody UpdatePatchNoteInput input
     ) {
         return new ResponseData<>(updatePatchNoteUseCase.execute(new UpdatePatchNoteInput(patchId, input.patchNote())));
     }
@@ -111,7 +112,7 @@ public class PatchController {
         while (iterator.hasNext()) {
             FileItemInput item = iterator.next();
             if (!item.isFormField()) {
-                UploadCatalogInput input = new UploadCatalogInput(patchId, item.getName(), item.getInputStream());
+                UploadCatalogInput input = new UploadCatalogInput(patchId, item.getInputStream());
                 return new ResponseData<>(uploadCatalogUseCase.execute(input));
             }
         }
@@ -130,7 +131,7 @@ public class PatchController {
         while (iterator.hasNext()) {
             FileItemInput item = iterator.next();
             if (!item.isFormField()) {
-                UploadCatalogHashInput input = new UploadCatalogHashInput(patchId, item.getName(), item.getInputStream());
+                UploadCatalogHashInput input = new UploadCatalogHashInput(patchId, item.getInputStream());
                 return new ResponseData<>(uploadCatalogHashUseCase.execute(input));
             }
         }

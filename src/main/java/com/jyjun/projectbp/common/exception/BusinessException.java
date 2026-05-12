@@ -1,5 +1,6 @@
 package com.jyjun.projectbp.common.exception;
 
+// 사실 business exception은 아니고 그냥 custom exception에 가깝게 사용되고 있긴 함
 public abstract class BusinessException extends RuntimeException {
 
     private final int status;

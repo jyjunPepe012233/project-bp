@@ -10,6 +10,7 @@ import com.jyjun.projectbp.application.game.usecase.LoadGameListUseCase;
 import com.jyjun.projectbp.application.game.usecase.LoadGameUseCase;
 import com.jyjun.projectbp.application.game.usecase.UpdateGameUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseData<CreateGameOutput> createGame(@RequestBody CreateGameInput input) {
+    public ResponseData<CreateGameOutput> createGame(@Valid @RequestBody CreateGameInput input) {
         return new ResponseData<>(createGameUseCase.execute(input));
     }
 
@@ -53,7 +54,7 @@ public class GameController {
     @PatchMapping("/{gameId}")
     public ResponseData<UpdateGameOutput> updateGame(
             @PathVariable Long gameId,
-            @RequestBody UpdateGameInput input
+            @Valid @RequestBody UpdateGameInput input
     ) {
         return new ResponseData<>(updateGameUseCase.execute(new UpdateGameInput(gameId, input.title(), input.description())));
     }

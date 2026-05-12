@@ -22,6 +22,7 @@ import com.jyjun.projectbp.application.permission.model.output.UpdateGamePermiss
 import com.jyjun.projectbp.application.permission.usecase.UpdateDeveloperPermissionUseCase;
 import com.jyjun.projectbp.application.permission.usecase.UpdateGamePermissionUseCase;
 import com.jyjun.projectbp.common.dto.ResponseData;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class AccountController {
     // 이 API처럼 Request/Response DTO를 따로 사용하지 않고 application의 Input/Output을 바로 사용하기.
     // 어차피 API과 UseCase가 1대1 구조이기 때문임
     @PostMapping
-    public ResponseData<CreateAccountOutput> createAccount(@RequestBody CreateAccountInput input) {
+    public ResponseData<CreateAccountOutput> createAccount(@Valid @RequestBody CreateAccountInput input) {
         return new ResponseData<>(createAccountUseCase.execute(input));
     }
 
@@ -101,7 +102,7 @@ public class AccountController {
     @PatchMapping("/{accountId}")
     public ResponseData<UpdateAccountOutput> updateAccount(
             @PathVariable Long accountId,
-            @RequestBody UpdateAccountInput input
+            @Valid @RequestBody UpdateAccountInput input
     ) {
         return new ResponseData<>(updateAccountUseCase.execute(new UpdateAccountInput(accountId, input.name())));
     }
@@ -109,7 +110,7 @@ public class AccountController {
     @PatchMapping("/{accountId}/password")
     public void updateAccountPassword(
             @PathVariable Long accountId,
-            @RequestBody UpdateAccountPasswordInput input
+            @Valid @RequestBody UpdateAccountPasswordInput input
     ) {
         updateAccountPasswordUseCase.execute(new UpdateAccountPasswordInput(accountId, input.password()));
     }
@@ -118,7 +119,7 @@ public class AccountController {
     public ResponseData<UpdateDeveloperPermissionOutput> updateDeveloperPermission(
             @PathVariable Long accountId,
             @PathVariable Long developerId,
-            @RequestBody UpdateDeveloperPermissionInput input
+            @Valid @RequestBody UpdateDeveloperPermissionInput input
     ) {
         return new ResponseData<>(updateDeveloperPermissionUseCase.execute(
                 new UpdateDeveloperPermissionInput(accountId, developerId, input.permissions())
@@ -129,7 +130,7 @@ public class AccountController {
     public ResponseData<UpdateGamePermissionOutput> updateGamePermission(
             @PathVariable Long accountId,
             @PathVariable Long gameId,
-            @RequestBody UpdateGamePermissionInput input
+            @Valid @RequestBody UpdateGamePermissionInput input
     ) {
         return new ResponseData<>(updateGamePermissionUseCase.execute(
                 new UpdateGamePermissionInput(accountId, gameId, input.permissions())
