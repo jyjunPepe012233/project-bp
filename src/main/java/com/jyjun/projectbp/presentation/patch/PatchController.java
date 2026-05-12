@@ -17,7 +17,7 @@ public class PatchController {
     }
 
     @PostMapping
-    public ResponseData<CreatePatchOutput> createPatch(@PathVariable Long gameId) {
+    public ResponseData<CreatePatchOutput> createPatch(@PathVariable Long gameId, @RequestBody CreatePatchInput input) {
         return new ResponseData<>(createPatchUseCase.execute(new CreatePatchInput(gameId, input.version(), input.platform(), input.patchNote())));
     }
 }
