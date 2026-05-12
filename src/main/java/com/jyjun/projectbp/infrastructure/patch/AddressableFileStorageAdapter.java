@@ -1,6 +1,6 @@
 package com.jyjun.projectbp.infrastructure.patch;
 
-import com.jyjun.projectbp.application.patch.outbound.PatchFileStoragePort;
+import com.jyjun.projectbp.application.patch.outbound.AddressableFileStoragePort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,15 +10,14 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 @Component
-public class PatchFileStorageAdapter implements PatchFileStoragePort {
+public class AddressableFileStorageAdapter implements AddressableFileStoragePort {
 
     private final Path patchesDir;
 
-    public PatchFileStorageAdapter(@Value("${file.storage.base-dir}") String baseDir) {
-        this.patchesDir = Paths.get(baseDir, "patches");
+    public AddressableFileStorageAdapter(@Value("${file.storage.base-dir}") String baseDir) {
+        this.patchesDir = Paths.get(baseDir, "addressables");
 
         try {
             Files.createDirectories(this.patchesDir);
@@ -28,12 +27,12 @@ public class PatchFileStorageAdapter implements PatchFileStoragePort {
     }
 
     @Override
-    public void save(String gameUuid, String platform, String version, String filename, InputStream data) {
-        validatePathSegment(platform);
+    public void save(String gameUuid, String version, String platform, String filename, InputStream data) {
         validatePathSegment(version);
+        validatePathSegment(platform);
         validatePathSegment(filename);
 
-        Path targetDir = patchesDir.resolve(gameUuid).resolve(platform).resolve(version);
+        Path targetDir = patchesDir.resolve(gameUuid).resolve(version).resolve(platform);
 
         try {
             Files.createDirectories(targetDir);
@@ -44,12 +43,12 @@ public class PatchFileStorageAdapter implements PatchFileStoragePort {
     }
 
     @Override
-    public void delete(String gameUuid, String platform, String version, String filename) {
-        validatePathSegment(platform);
+    public void delete(String gameUuid, String version, String platform, String filename) {
         validatePathSegment(version);
+        validatePathSegment(platform);
         validatePathSegment(filename);
 
-        Path target = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve(filename);
+        Path target = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve(filename);
 
         try {
             Files.deleteIfExists(target);
