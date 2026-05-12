@@ -9,6 +9,7 @@ import com.jyjun.projectbp.application.patch.model.output.CreatePatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.UpdatePatchNoteOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
+import com.jyjun.projectbp.application.patch.model.output.LoadBundleFileListOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
 import com.jyjun.projectbp.application.patch.usecase.CreatePatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.DeleteCatalogHashUseCase;
@@ -16,6 +17,7 @@ import com.jyjun.projectbp.application.patch.usecase.DeleteCatalogUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchListUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UpdatePatchNoteUseCase;
+import com.jyjun.projectbp.application.patch.usecase.LoadBundleFileListUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadBundleUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogHashUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogUseCase;
@@ -42,6 +44,7 @@ public class PatchController {
     private final DeleteCatalogUseCase deleteCatalogUseCase;
     private final DeleteCatalogHashUseCase deleteCatalogHashUseCase;
     private final UploadBundleUseCase uploadBundleUseCase;
+    private final LoadBundleFileListUseCase loadBundleFileListUseCase;
 
     public PatchController(
             CreatePatchUseCase createPatchUseCase,
@@ -52,7 +55,8 @@ public class PatchController {
             UploadCatalogHashUseCase uploadCatalogHashUseCase,
             DeleteCatalogUseCase deleteCatalogUseCase,
             DeleteCatalogHashUseCase deleteCatalogHashUseCase,
-            UploadBundleUseCase uploadBundleUseCase
+            UploadBundleUseCase uploadBundleUseCase,
+            LoadBundleFileListUseCase loadBundleFileListUseCase
     ) {
         this.createPatchUseCase = createPatchUseCase;
         this.loadPatchListUseCase = loadPatchListUseCase;
@@ -63,6 +67,7 @@ public class PatchController {
         this.deleteCatalogUseCase = deleteCatalogUseCase;
         this.deleteCatalogHashUseCase = deleteCatalogHashUseCase;
         this.uploadBundleUseCase = uploadBundleUseCase;
+        this.loadBundleFileListUseCase = loadBundleFileListUseCase;
     }
 
     @GetMapping
@@ -87,6 +92,12 @@ public class PatchController {
     ) {
         return new ResponseData<>(updatePatchNoteUseCase.execute(new UpdatePatchNoteInput(patchId, input.patchNote())));
     }
+
+
+
+    // Multipart 사용하면 Servlet이 메모리에 파일을 저장하는데, 이 때 OutOfMemory 에러가 발생하기 때문에
+    // Apache Commons FileUpload 라이브러리를 사용하여 스트리밍 방식으로 파일을 처리하도록 구현함
+    // form-data를 사용하는 이유는 파일 이름을 추출하기 위함임. (파일 이름이 필요하지 않았다면 InputStream으로 받았을 듯)
 
     @PostMapping(value = "/{patchId}/catalog", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseData<UploadCatalogOutput> uploadCatalog(
@@ -134,6 +145,11 @@ public class PatchController {
     @DeleteMapping("/{patchId}/catalog-hash")
     public void deleteCatalogHash(@PathVariable Long patchId) {
         deleteCatalogHashUseCase.execute(patchId);
+    }
+
+    @GetMapping("/{patchId}/bundles")
+    public ResponseData<LoadBundleFileListOutput> loadBundleFileList(@PathVariable Long patchId) {
+        return new ResponseData<>(loadBundleFileListUseCase.execute(patchId));
     }
 
     @PostMapping(value = "/{patchId}/bundles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

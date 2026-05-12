@@ -10,6 +10,9 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 public class AddressableFileStorageAdapter implements AddressableFileStoragePort {
@@ -85,6 +88,28 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
             Files.deleteIfExists(target);
         } catch (IOException e) {
             throw new UncheckedIOException("번들 파일 삭제 실패: " + filename, e);
+        }
+    }
+
+    @Override
+    public List<String> listBundleFiles(String gameUuid, String version, String platform) {
+        validatePathSegment(version);
+        validatePathSegment(platform);
+
+        Path bundleDir = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve("bundles");
+
+        if (!Files.isDirectory(bundleDir)) {
+            return Collections.emptyList();
+        }
+
+        try (Stream<Path> stream = Files.list(bundleDir)) {
+            return stream
+                    .filter(Files::isRegularFile)
+                    .map(p -> p.getFileName().toString())
+                    .sorted()
+                    .toList();
+        } catch (IOException e) {
+            throw new UncheckedIOException("번들 파일 목록 조회 실패", e);
         }
     }
 
