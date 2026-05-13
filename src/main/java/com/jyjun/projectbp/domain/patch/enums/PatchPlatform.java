@@ -2,7 +2,8 @@ package com.jyjun.projectbp.domain.patch.enums;
 
 public enum PatchPlatform {
     ANDROID("Android"),
-    IOS("iOS");
+    IOS("iOS"),
+    STANDALONE_OSX("StandaloneOSX");
 
     private final String formattedName;
 

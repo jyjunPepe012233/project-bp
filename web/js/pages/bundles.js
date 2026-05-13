@@ -50,6 +50,7 @@ const bundlesPage = (() => {
                 <option value="" disabled selected>플랫폼 선택</option>
                 <option value="ANDROID">Android</option>
                 <option value="IOS">iOS</option>
+                <option value="STANDALONE_OSX">StandaloneOSX</option>
               </select>
             </div>
           </div>

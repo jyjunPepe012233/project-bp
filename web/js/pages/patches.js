@@ -1,5 +1,5 @@
 const patchesPage = (() => {
-  const PLATFORM_LABEL = { ANDROID: 'Android', IOS: 'iOS' };
+  const PLATFORM_LABEL = { ANDROID: 'Android', IOS: 'iOS', STANDALONE_OSX: 'StandaloneOSX' };
 
   let _allPatches = [];
   let _games      = [];
@@ -397,6 +397,10 @@ const patchesPage = (() => {
                 <label class="platform-check-item">
                   <input type="checkbox" class="platform-check" value="IOS" />
                   <span>iOS</span>
+                </label>
+                <label class="platform-check-item">
+                  <input type="checkbox" class="platform-check" value="STANDALONE_OSX" />
+                  <span>StandaloneOSX</span>
                 </label>
               </div>
             </div>
