@@ -28,10 +28,6 @@ public class Patch {
     @Column(nullable = false, length = 4096)
     private String patchNote;
 
-    private String catalogFileName;
-
-    private String catalogHashFileName;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -76,21 +72,5 @@ public class Patch {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public String getCatalogFileName() {
-        return catalogFileName;
-    }
-
-    public String getCatalogHashFileName() {
-        return catalogHashFileName;
-    }
-
-    public void setCatalogFileName(String catalogFileName) {
-        this.catalogFileName = catalogFileName;
-    }
-
-    public void setCatalogHashFileName(String catalogHashFileName) {
-        this.catalogHashFileName = catalogHashFileName;
     }
 }

@@ -11,6 +11,8 @@ import com.jyjun.projectbp.application.patch.model.output.UpdatePatchNoteOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
 import com.jyjun.projectbp.application.patch.model.output.LoadBundleFileListOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
+import com.jyjun.projectbp.application.patch.model.output.CatalogUploadedOutput;
+import com.jyjun.projectbp.application.patch.usecase.CheckCatalogUploadedUseCase;
 import com.jyjun.projectbp.application.patch.usecase.CreatePatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.DeleteCatalogHashUseCase;
 import com.jyjun.projectbp.application.patch.usecase.DeleteCatalogUseCase;
@@ -34,13 +36,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/games/{gameId}/patches")
 public class PatchController {
 
     private final CreatePatchUseCase createPatchUseCase;
     private final LoadPatchListUseCase loadPatchListUseCase;
     private final LoadPatchUseCase loadPatchUseCase;
     private final UpdatePatchNoteUseCase updatePatchNoteUseCase;
+    private final CheckCatalogUploadedUseCase checkCatalogUploadedUseCase;
     private final UploadCatalogUseCase uploadCatalogUseCase;
     private final UploadCatalogHashUseCase uploadCatalogHashUseCase;
     private final DeleteCatalogUseCase deleteCatalogUseCase;
@@ -53,6 +55,7 @@ public class PatchController {
             LoadPatchListUseCase loadPatchListUseCase,
             LoadPatchUseCase loadPatchUseCase,
             UpdatePatchNoteUseCase updatePatchNoteUseCase,
+            CheckCatalogUploadedUseCase checkCatalogUploadedUseCase,
             UploadCatalogUseCase uploadCatalogUseCase,
             UploadCatalogHashUseCase uploadCatalogHashUseCase,
             DeleteCatalogUseCase deleteCatalogUseCase,
@@ -64,6 +67,7 @@ public class PatchController {
         this.loadPatchListUseCase = loadPatchListUseCase;
         this.loadPatchUseCase = loadPatchUseCase;
         this.updatePatchNoteUseCase = updatePatchNoteUseCase;
+        this.checkCatalogUploadedUseCase = checkCatalogUploadedUseCase;
         this.uploadCatalogUseCase = uploadCatalogUseCase;
         this.uploadCatalogHashUseCase = uploadCatalogHashUseCase;
         this.deleteCatalogUseCase = deleteCatalogUseCase;
@@ -72,22 +76,30 @@ public class PatchController {
         this.loadBundleFileListUseCase = loadBundleFileListUseCase;
     }
 
-    @GetMapping
-    public ResponseData<List<LoadPatchOutput>> loadPatchList(@PathVariable Long gameId) {
-        return new ResponseData<>(loadPatchListUseCase.execute(gameId));
-    }
 
-    @PostMapping
+
+    // gameId가 필요한 엔드포인트는 /games/{gameId}/patches 로 시작
+
+    @PostMapping("/games/{gameId}/patches")
     public ResponseData<CreatePatchOutput> createPatch(@PathVariable Long gameId, @Valid @RequestBody CreatePatchInput input) {
         return new ResponseData<>(createPatchUseCase.execute(new CreatePatchInput(gameId, input.version(), input.platform(), input.patchNote())));
     }
 
-    @GetMapping("/{patchId}")
+    @GetMapping("/games/{gameId}/patches/{patchId}")
     public ResponseData<LoadPatchOutput> loadPatch(@PathVariable Long gameId, @PathVariable Long patchId) {
         return new ResponseData<>(loadPatchUseCase.execute(gameId, patchId));
     }
 
-    @PatchMapping("/{patchId}")
+    @GetMapping("/games/{gameId}/patches")
+    public ResponseData<List<LoadPatchOutput>> loadPatchList(@PathVariable Long gameId) {
+        return new ResponseData<>(loadPatchListUseCase.execute(gameId));
+    }
+
+
+
+    // --- gameId가 불필요한 엔드포인트는 /patches/{patchId}로 시작
+
+    @PatchMapping("/patches/{patchId}")
     public ResponseData<UpdatePatchNoteOutput> updatePatchNote(
             @PathVariable Long patchId,
             @Valid @RequestBody UpdatePatchNoteInput input
@@ -95,13 +107,10 @@ public class PatchController {
         return new ResponseData<>(updatePatchNoteUseCase.execute(new UpdatePatchNoteInput(patchId, input.patchNote())));
     }
 
-
-
     // Multipart 사용하면 Servlet이 메모리에 파일을 저장하는데, 이 때 OutOfMemory 에러가 발생하기 때문에
     // Apache Commons FileUpload 라이브러리를 사용하여 스트리밍 방식으로 파일을 처리하도록 구현함
-    // form-data를 사용하는 이유는 파일 이름을 추출하기 위함임. (파일 이름이 필요하지 않았다면 InputStream으로 받았을 듯)
 
-    @PostMapping(value = "/{patchId}/catalog", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/patches/{patchId}/catalog", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseData<UploadCatalogOutput> uploadCatalog(
             @PathVariable Long patchId,
             HttpServletRequest request
@@ -120,7 +129,7 @@ public class PatchController {
         throw new MissingFileException("catalog 파일이 필요합니다.");
     }
 
-    @PostMapping(value = "/{patchId}/catalog-hash", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/patches/{patchId}/catalog-hash", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseData<UploadCatalogHashOutput> uploadCatalogHash(
             @PathVariable Long patchId,
             HttpServletRequest request
@@ -139,22 +148,7 @@ public class PatchController {
         throw new MissingFileException("catalogHash 파일이 필요합니다.");
     }
 
-    @DeleteMapping("/{patchId}/catalog")
-    public void deleteCatalog(@PathVariable Long patchId) {
-        deleteCatalogUseCase.execute(patchId);
-    }
-
-    @DeleteMapping("/{patchId}/catalog-hash")
-    public void deleteCatalogHash(@PathVariable Long patchId) {
-        deleteCatalogHashUseCase.execute(patchId);
-    }
-
-    @GetMapping("/{patchId}/bundles")
-    public ResponseData<LoadBundleFileListOutput> loadBundleFileList(@PathVariable Long patchId) {
-        return new ResponseData<>(loadBundleFileListUseCase.execute(patchId));
-    }
-
-    @PostMapping(value = "/{patchId}/bundles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/patches/{patchId}/bundles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void uploadBundle(
             @PathVariable Long patchId,
             HttpServletRequest request
@@ -171,5 +165,30 @@ public class PatchController {
         }
 
         throw new MissingFileException("요청에 파일 파트가 없습니다.");
+    }
+
+    @GetMapping("/patches/{patchId}/catalog/uploaded")
+    public ResponseData<CatalogUploadedOutput> checkCatalogUploaded(@PathVariable Long patchId) {
+        return new ResponseData<>(checkCatalogUploadedUseCase.checkCatalog(patchId));
+    }
+
+    @GetMapping("/patches/{patchId}/catalog-hash/uploaded")
+    public ResponseData<CatalogUploadedOutput> checkCatalogHashUploaded(@PathVariable Long patchId) {
+        return new ResponseData<>(checkCatalogUploadedUseCase.checkCatalogHash(patchId));
+    }
+
+    @GetMapping("/patches/{patchId}/bundles")
+    public ResponseData<LoadBundleFileListOutput> loadBundleFileList(@PathVariable Long patchId) {
+        return new ResponseData<>(loadBundleFileListUseCase.execute(patchId));
+    }
+
+    @DeleteMapping("/patches/{patchId}/catalog")
+    public void deleteCatalog(@PathVariable Long patchId) {
+        deleteCatalogUseCase.execute(patchId);
+    }
+
+    @DeleteMapping("/patches/{patchId}/catalog-hash")
+    public void deleteCatalogHash(@PathVariable Long patchId) {
+        deleteCatalogHashUseCase.execute(patchId);
     }
 }

@@ -6,7 +6,6 @@ import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUt
 import com.jyjun.projectbp.application.game.service.LoadGameService;
 import com.jyjun.projectbp.application.patch.service.DeleteCatalogService;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
-import com.jyjun.projectbp.application.patch.service.UpdatePatchCatalogService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
@@ -26,7 +25,6 @@ public class DeleteCatalogUseCase {
     private final LoadPatchService loadPatchService;
     private final LoadGameService loadGameService;
     private final DeleteCatalogService deleteCatalogService;
-    private final UpdatePatchCatalogService updatePatchCatalogService;
 
     private final IsRootAccountOfDeveloperUtil isRootAccountOfDeveloperUtil;
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
@@ -37,7 +35,6 @@ public class DeleteCatalogUseCase {
             LoadPatchService loadPatchService,
             LoadGameService loadGameService,
             DeleteCatalogService deleteCatalogService,
-            UpdatePatchCatalogService updatePatchCatalogService,
             LoadDeveloperService loadDeveloperService,
             LoadDeveloperAccessPermissionService loadDeveloperAccessPermissionService,
             LoadGameAccessPermissionService loadGameAccessPermissionService
@@ -46,7 +43,6 @@ public class DeleteCatalogUseCase {
         this.loadPatchService = loadPatchService;
         this.loadGameService = loadGameService;
         this.deleteCatalogService = deleteCatalogService;
-        this.updatePatchCatalogService = updatePatchCatalogService;
 
         this.isRootAccountOfDeveloperUtil = new IsRootAccountOfDeveloperUtil(loadDeveloperService);
         this.hasDeveloperAccessPermissionUtil = new HasDeveloperAccessPermissionUtil(loadDeveloperAccessPermissionService);
@@ -70,12 +66,7 @@ public class DeleteCatalogUseCase {
             throw new AccessDeniedException("카탈로그를 삭제할 권한이 없습니다.");
         }
 
-        String catalogFileName = patch.getCatalogFileName();
-        if (catalogFileName != null && !catalogFileName.isBlank()) {
-            String gameUuid = game.getUuid().toString();
-            deleteCatalogService.delete(gameUuid, patch.getVersion(), patch.getPlatform(), catalogFileName);
-        }
-
-        updatePatchCatalogService.updateCatalogFileName(patchId, null);
+        String gameUuid = game.getUuid().toString();
+        deleteCatalogService.deleteCatalog(gameUuid, patch.getVersion(), patch.getPlatform());
     }
 }

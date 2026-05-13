@@ -5,9 +5,17 @@ import java.util.List;
 
 public interface AddressableFileStoragePort {
 
-    void saveCatalog(String gameUuid, String version, String platform, String filename, InputStream data);
+    void saveCatalog(String gameUuid, String version, String platform, InputStream data);
 
-    void deleteCatalog(String gameUuid, String version, String platform, String filename);
+    void deleteCatalog(String gameUuid, String version, String platform);
+
+    boolean catalogExists(String gameUuid, String version, String platform);
+
+    void saveCatalogHash(String gameUuid, String version, String platform, InputStream data);
+
+    void deleteCatalogHash(String gameUuid, String version, String platform);
+
+    boolean catalogHashExists(String gameUuid, String version, String platform);
 
     void saveBundle(String gameUuid, String version, String platform, String filename, InputStream data);
 

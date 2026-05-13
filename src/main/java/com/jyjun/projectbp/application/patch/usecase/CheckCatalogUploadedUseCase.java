@@ -4,7 +4,7 @@ import com.jyjun.projectbp.application.auth.service.LoadCurrentAccountService;
 import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
-import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
+import com.jyjun.projectbp.application.patch.model.output.CatalogUploadedOutput;
 import com.jyjun.projectbp.application.patch.outbound.AddressableFileStoragePort;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
@@ -19,7 +19,7 @@ import com.jyjun.projectbp.domain.patch.model.Patch;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LoadPatchUseCase {
+public class CheckCatalogUploadedUseCase {
 
     private final LoadCurrentAccountService loadCurrentAccountService;
     private final LoadGameService loadGameService;
@@ -30,7 +30,7 @@ public class LoadPatchUseCase {
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
     private final HasGameAccessPermissionUtil hasGameAccessPermissionUtil;
 
-    public LoadPatchUseCase(
+    public CheckCatalogUploadedUseCase(
             LoadCurrentAccountService loadCurrentAccountService,
             LoadGameService loadGameService,
             LoadPatchService loadPatchService,
@@ -49,43 +49,43 @@ public class LoadPatchUseCase {
         this.hasGameAccessPermissionUtil = new HasGameAccessPermissionUtil(loadGameAccessPermissionService);
     }
 
-    public LoadPatchOutput execute(Long gameId, Long patchId) {
-        Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
-        Game game = loadGameService.loadByIdOrThrow(gameId);
-        Long developerId = game.getDeveloperId();
-
-        if (isRootAccountOfDeveloperUtil.is(currentAccountId, developerId)) {
-            // 루트 계정이면 통과
-        } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.ADMIN)) {
-            // 개발자 ADMIN 권한 있으면 통과
-        } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.PUBLISHER)) {
-            // 개발자 PUBLISHER 권한 있으면 통과
-        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.ADMIN)) {
-            // 게임 ADMIN 권한 있으면 통과
-        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.PRIMARY_WRITE)) {
-            // 게임 PRIMARY_WRITE 권한 있으면 통과
-        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.MAINTAIN)) {
-            // 게임 MAINTAIN 권한 있으면 통과
-        } else {
-            throw new AccessDeniedException("패치 정보를 조회할 권한이 없습니다.");
-        }
-
-        Patch patch = loadPatchService.loadByIdOrThrow(patchId);
+    public CatalogUploadedOutput checkCatalog(Long patchId) {
+        Patch patch = loadAndAuthorize(patchId);
+        Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
         String gameUuid = game.getUuid().toString();
         String platform = patch.getPlatform().getFormattedName();
 
-        boolean catalogUploaded = addressableFileStoragePort.catalogExists(gameUuid, patch.getVersion(), platform);
-        boolean catalogHashUploaded = addressableFileStoragePort.catalogHashExists(gameUuid, patch.getVersion(), platform);
+        boolean uploaded = addressableFileStoragePort.catalogExists(gameUuid, patch.getVersion(), platform);
+        return new CatalogUploadedOutput(uploaded);
+    }
 
-        return new LoadPatchOutput(
-                patch.getId(),
-                patch.getGameId(),
-                patch.getVersion(),
-                patch.getPlatform(),
-                patch.getPatchNote(),
-                catalogUploaded,
-                catalogHashUploaded,
-                patch.getCreatedAt()
-        );
+    public CatalogUploadedOutput checkCatalogHash(Long patchId) {
+        Patch patch = loadAndAuthorize(patchId);
+        Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
+        String gameUuid = game.getUuid().toString();
+        String platform = patch.getPlatform().getFormattedName();
+
+        boolean uploaded = addressableFileStoragePort.catalogHashExists(gameUuid, patch.getVersion(), platform);
+        return new CatalogUploadedOutput(uploaded);
+    }
+
+    private Patch loadAndAuthorize(Long patchId) {
+        Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
+        Patch patch = loadPatchService.loadByIdOrThrow(patchId);
+        Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
+        Long developerId = game.getDeveloperId();
+        Long gameId = game.getId();
+
+        if (isRootAccountOfDeveloperUtil.is(currentAccountId, developerId)) {
+        } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.ADMIN)) {
+        } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.PUBLISHER)) {
+        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.ADMIN)) {
+        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.PRIMARY_WRITE)) {
+        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.MAINTAIN)) {
+        } else {
+            throw new AccessDeniedException("카탈로그 상태를 조회할 권한이 없습니다.");
+        }
+
+        return patch;
     }
 }

@@ -4,7 +4,6 @@ import java.io.InputStream;
 
 public record UploadCatalogHashInput(
         Long patchId,
-        String catalogHashFilename,
         InputStream catalogHashData
 ) {
 }

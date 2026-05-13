@@ -10,8 +10,8 @@ public record LoadPatchOutput(
         String version,
         PatchPlatform platform,
         String patchNote,
-        String catalogFileName,
-        String catalogHashFileName,
+        boolean catalogUploaded,
+        boolean catalogHashUploaded,
         LocalDateTime createdAt
 ) {
 }

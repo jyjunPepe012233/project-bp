@@ -7,7 +7,6 @@ public record UploadCatalogOutput(
         Long gameId,
         String version,
         PatchPlatform platform,
-        String patchNote,
-        String catalogFilename
+        String patchNote
 ) {
 }

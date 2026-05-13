@@ -8,7 +8,6 @@ import com.jyjun.projectbp.application.patch.model.input.UploadCatalogHashInput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.patch.service.SaveCatalogService;
-import com.jyjun.projectbp.application.patch.service.UpdatePatchCatalogService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
@@ -28,7 +27,6 @@ public class UploadCatalogHashUseCase {
     private final LoadPatchService loadPatchService;
     private final LoadGameService loadGameService;
     private final SaveCatalogService saveCatalogService;
-    private final UpdatePatchCatalogService updatePatchCatalogService;
 
     private final IsRootAccountOfDeveloperUtil isRootAccountOfDeveloperUtil;
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
@@ -39,7 +37,6 @@ public class UploadCatalogHashUseCase {
             LoadPatchService loadPatchService,
             LoadGameService loadGameService,
             SaveCatalogService saveCatalogService,
-            UpdatePatchCatalogService updatePatchCatalogService,
             LoadDeveloperService loadDeveloperService,
             LoadDeveloperAccessPermissionService loadDeveloperAccessPermissionService,
             LoadGameAccessPermissionService loadGameAccessPermissionService
@@ -48,7 +45,6 @@ public class UploadCatalogHashUseCase {
         this.loadPatchService = loadPatchService;
         this.loadGameService = loadGameService;
         this.saveCatalogService = saveCatalogService;
-        this.updatePatchCatalogService = updatePatchCatalogService;
 
         this.isRootAccountOfDeveloperUtil = new IsRootAccountOfDeveloperUtil(loadDeveloperService);
         this.hasDeveloperAccessPermissionUtil = new HasDeveloperAccessPermissionUtil(loadDeveloperAccessPermissionService);
@@ -78,10 +74,8 @@ public class UploadCatalogHashUseCase {
         }
 
         String gameUuid = game.getUuid().toString();
-        saveCatalogService.save(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogHashFilename(), input.catalogHashData());
+        saveCatalogService.saveCatalogHash(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogHashData());
 
-        Patch updated = updatePatchCatalogService.updateCatalogHashFileName(input.patchId(), input.catalogHashFilename());
-
-        return new UploadCatalogHashOutput(updated.getId(), updated.getGameId(), updated.getVersion(), updated.getPlatform(), updated.getPatchNote(), updated.getCatalogHashFileName());
+        return new UploadCatalogHashOutput(patch.getId(), patch.getGameId(), patch.getVersion(), patch.getPlatform(), patch.getPatchNote());
     }
 }

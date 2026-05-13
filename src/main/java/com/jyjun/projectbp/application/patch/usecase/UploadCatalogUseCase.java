@@ -8,7 +8,6 @@ import com.jyjun.projectbp.application.patch.model.input.UploadCatalogInput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.patch.service.SaveCatalogService;
-import com.jyjun.projectbp.application.patch.service.UpdatePatchCatalogService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
@@ -28,7 +27,6 @@ public class UploadCatalogUseCase {
     private final LoadPatchService loadPatchService;
     private final LoadGameService loadGameService;
     private final SaveCatalogService saveCatalogService;
-    private final UpdatePatchCatalogService updatePatchCatalogService;
 
     private final IsRootAccountOfDeveloperUtil isRootAccountOfDeveloperUtil;
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
@@ -39,7 +37,6 @@ public class UploadCatalogUseCase {
             LoadPatchService loadPatchService,
             LoadGameService loadGameService,
             SaveCatalogService saveCatalogService,
-            UpdatePatchCatalogService updatePatchCatalogService,
             LoadDeveloperService loadDeveloperService,
             LoadDeveloperAccessPermissionService loadDeveloperAccessPermissionService,
             LoadGameAccessPermissionService loadGameAccessPermissionService
@@ -48,7 +45,6 @@ public class UploadCatalogUseCase {
         this.loadPatchService = loadPatchService;
         this.loadGameService = loadGameService;
         this.saveCatalogService = saveCatalogService;
-        this.updatePatchCatalogService = updatePatchCatalogService;
 
         this.isRootAccountOfDeveloperUtil = new IsRootAccountOfDeveloperUtil(loadDeveloperService);
         this.hasDeveloperAccessPermissionUtil = new HasDeveloperAccessPermissionUtil(loadDeveloperAccessPermissionService);
@@ -78,10 +74,8 @@ public class UploadCatalogUseCase {
         }
 
         String gameUuid = game.getUuid().toString();
-        saveCatalogService.save(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogFilename(), input.catalogData());
+        saveCatalogService.saveCatalog(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogData());
 
-        Patch updated = updatePatchCatalogService.updateCatalogFileName(input.patchId(), input.catalogFilename());
-
-        return new UploadCatalogOutput(updated.getId(), updated.getGameId(), updated.getVersion(), updated.getPlatform(), updated.getPatchNote(), updated.getCatalogFileName());
+        return new UploadCatalogOutput(patch.getId(), patch.getGameId(), patch.getVersion(), patch.getPlatform(), patch.getPatchNote());
     }
 }
