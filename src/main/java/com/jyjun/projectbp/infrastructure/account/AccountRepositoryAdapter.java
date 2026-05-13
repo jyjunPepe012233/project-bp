@@ -35,4 +35,9 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     public List<Account> findAllByIds(List<Long> ids) {
         return jpaAccountRepository.findAllById(ids);
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        return jpaAccountRepository.existsByName(name);
+    }
 }

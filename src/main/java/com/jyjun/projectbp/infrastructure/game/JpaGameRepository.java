@@ -8,4 +8,6 @@ import java.util.List;
 public interface JpaGameRepository extends JpaRepository<Game, Long> {
 
     List<Game> findByDeveloperId(Long developerId);
+
+    boolean existsByTitle(String title);
 }

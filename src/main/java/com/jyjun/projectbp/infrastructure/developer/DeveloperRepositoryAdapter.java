@@ -35,4 +35,9 @@ public class DeveloperRepositoryAdapter implements DeveloperRepositoryPort {
     public List<Developer> findAllByIds(List<Long> ids) {
         return jpaDeveloperRepository.findAllById(ids);
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        return jpaDeveloperRepository.existsByName(name);
+    }
 }

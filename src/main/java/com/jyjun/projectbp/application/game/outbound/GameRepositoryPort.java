@@ -14,4 +14,6 @@ public interface GameRepositoryPort {
     List<Game> findByDeveloperId(Long developerId);
 
     List<Game> findAllByIds(List<Long> ids);
+
+    boolean existsByTitle(String title);
 }

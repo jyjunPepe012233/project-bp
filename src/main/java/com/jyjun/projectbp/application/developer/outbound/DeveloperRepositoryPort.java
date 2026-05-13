@@ -14,4 +14,6 @@ public interface DeveloperRepositoryPort {
     Optional<Developer> findByRootAccountId(Long rootAccountId);
 
     List<Developer> findAllByIds(List<Long> ids);
+
+    boolean existsByName(String name);
 }

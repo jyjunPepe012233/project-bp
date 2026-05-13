@@ -35,4 +35,9 @@ public class GameRepositoryAdapter implements GameRepositoryPort {
     public List<Game> findAllByIds(List<Long> ids) {
         return jpaGameRepository.findAllById(ids);
     }
+
+    @Override
+    public boolean existsByTitle(String title) {
+        return jpaGameRepository.existsByTitle(title);
+    }
 }

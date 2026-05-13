@@ -14,4 +14,6 @@ public interface AccountRepositoryPort {
     Optional<Account> findByName(String name);
 
     List<Account> findAllByIds(List<Long> ids);
+
+    boolean existsByName(String name);
 }
