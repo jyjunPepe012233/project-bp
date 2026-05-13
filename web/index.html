@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style/base.css" />
+  <link rel="stylesheet" href="style/layout.css" />
+  <link rel="stylesheet" href="style/components.css" />
+</head>
+<body>
+
+  <!-- 로그인 뷰 -->
+  <div id="login-view">
+    <div class="login-panel">
+      <div class="login-brand">BP Admin Console</div>
+      <div class="login-card">
+        <h2>로그인</h2>
+        <form id="login-form">
+          <div id="login-error" hidden></div>
+          <div class="form-group">
+            <label class="form-label" for="input-name">계정명</label>
+            <input id="input-name" class="form-input" type="text" autocomplete="username" autofocus />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="input-password">비밀번호</label>
+            <input id="input-password" class="form-input" type="password" autocomplete="current-password" />
+          </div>
+          <button id="login-btn" class="btn btn-primary" type="submit">로그인</button>
+        </form>
+        <div class="login-footer">
+          처음이라면 &nbsp;<a href="#/developers/new">개발자 등록 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공개 뷰 (비로그인 접근 가능 페이지) -->
+  <div id="public-view" hidden>
+    <div id="public-content"></div>
+  </div>
+
+  <!-- 앱 뷰 (로그인 후) -->
+  <div id="app" hidden>
+
+    <nav id="sidebar">
+      <div class="sb-brand">
+        <div class="sb-brand-logo">BP</div>
+        <span class="sb-brand-name">Admin</span>
+      </div>
+      <div class="sb-nav">
+        <div class="sb-section">
+          <a href="#/" class="nav-link" data-path="/">대시보드</a>
+        </div>
+        <div class="sb-section" id="nav-developers">
+          <span class="sb-section-label">개발사</span>
+          <a href="#/developers" class="nav-link" data-path="/developers">개발사 관리</a>
+        </div>
+        <div class="sb-section" id="nav-games">
+          <span class="sb-section-label">게임</span>
+          <a href="#/games" class="nav-link" data-path="/games">게임 목록</a>
+          <a href="#/games/new" class="nav-link" data-path="/games/new" id="nav-games-new">게임 등록</a>
+        </div>
+        <div class="sb-section" id="nav-patches">
+          <span class="sb-section-label">패치</span>
+          <a href="#/patches" class="nav-link" data-path="/patches">패치 목록</a>
+          <a href="#/patches/new" class="nav-link" data-path="/patches/new" id="nav-patches-new">패치 생성</a>
+          <a href="#/patches/upload" class="nav-link" data-path="/patches/upload" id="nav-patches-upload">카탈로그 업로드</a>
+          <a href="#/bundles" class="nav-link" data-path="/bundles" id="nav-bundles">번들 관리</a>
+        </div>
+        <div class="sb-section" id="nav-accounts">
+          <span class="sb-section-label">계정</span>
+          <a href="#/accounts" class="nav-link" data-path="/accounts">계정 목록</a>
+          <a href="#/accounts/new" class="nav-link" data-path="/accounts/new" id="nav-accounts-new">계정 생성</a>
+        </div>
+      </div>
+      <div class="sb-footer">
+        <div class="sb-account" id="sb-account-name"></div>
+        <button class="btn-logout" onclick="logout()">로그아웃</button>
+      </div>
+    </nav>
+
+    <div id="content-wrapper">
+      <div id="topbar">
+        <span id="topbar-title">대시보드</span>
+        <span class="topbar-meta">BP ADMIN</span>
+      </div>
+      <main id="content"></main>
+    </div>
+
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/permissions.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/pages/login.js"></script>
+  <script src="js/pages/dashboard.js"></script>
+  <script src="js/pages/developers.js"></script>
+  <script src="js/pages/games.js"></script>
+  <script src="js/pages/patches.js"></script>
+  <script src="js/pages/bundles.js"></script>
+  <script src="js/pages/accounts.js"></script>
+  <script>
+    function setPageTitle(title) {
+      document.getElementById('topbar-title').textContent = title;
+    }
+
+    function logout() {
+      if (!confirm('로그아웃 하시겠습니까?')) return;
+      store.clearTokens();
+      permissions.clear();
+      location.hash = '/';
+      router.resolve();
+    }
+
+    function updateSidebarAccount() {
+      const el = document.getElementById('sb-account-name');
+      if (!el) return;
+      const name = store.getAccountName();
+      el.textContent = name || '';
+    }
+
+    function updateSidebar() {
+      if (!store.isLoggedIn()) return;
+      const toggle = (id, visible) => {
+        const el = document.getElementById(id);
+        if (el) el.hidden = !visible;
+      };
+      toggle('nav-developers', permissions.canViewDevelopers());
+      toggle('nav-games', permissions.canViewGames());
+      toggle('nav-games-new', permissions.canCreateGame());
+      toggle('nav-patches', permissions.canViewPatches());
+      toggle('nav-patches-new', permissions.canCreatePatch());
+      toggle('nav-patches-upload', permissions.canUploadCatalog());
+      toggle('nav-bundles', permissions.canViewBundles());
+      toggle('nav-accounts', permissions.canManageAccounts());
+      toggle('nav-accounts-new', permissions.canManageAccounts());
+    }
+
+    router.register('/', c => dashboardPage.render(c));
+    router.register('/games', c => gamesPage.renderList(c));
+    router.register('/games/new', c => gamesPage.renderNew(c));
+    router.register('/games/edit', c => gamesPage.renderEdit(c));
+    router.register('/patches', c => patchesPage.renderList(c));
+    router.register('/patches/new', c => patchesPage.renderNew(c));
+    router.register('/patches/edit', c => patchesPage.renderEdit(c));
+    router.register('/patches/upload', c => patchesPage.renderUpload(c));
+    router.register('/bundles', c => bundlesPage.render(c));
+    router.register('/developers', c => developersPage.renderList(c));
+    router.register('/developers/new', c => developersPage.renderNew(c));
+    router.register('/developers/edit', c => developersPage.renderEdit(c));
+    router.register('/accounts', c => accountsPage.renderList(c));
+    router.register('/accounts/new', c => accountsPage.renderNew(c));
+    router.register('/accounts/edit', c => accountsPage.renderEdit(c));
+
+    async function verifyAuth() {
+      if (!store.isLoggedIn()) return;
+      try {
+        const me = await api.getMyAccount();
+        store.setAccountName(me.data.name);
+        store.setAccountId(me.data.id);
+        await permissions.load();
+      } catch {
+        store.clearTokens();
+        permissions.clear();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      loginPage.init();
+      await verifyAuth();
+      updateSidebar();
+      router.resolve();
+      updateSidebarAccount();
+    });
+
+    window.addEventListener('hashchange', updateSidebarAccount);
+  </script>
+</body>
+</html>
