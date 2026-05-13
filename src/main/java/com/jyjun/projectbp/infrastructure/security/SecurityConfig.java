@@ -44,6 +44,9 @@ public class SecurityConfig {
                         // Swagger, H2 Console(안 쓰고 있긴 함)
                         .requestMatchers("/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
+                        // ResourceHandlerConfig에서 설정한 번들 리소스 접근 경로
+                        .requestMatchers("/bundles/**").permitAll()
+
 
                         // 현재 서비스는 권한 별로 특정 기능 사용을 제한하고 있는데,
                         // hasRole이나 HasAuthority를 걸지 않고 비즈니스 로직에서 직접 권한을 확인하고 있음
