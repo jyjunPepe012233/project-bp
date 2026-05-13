@@ -2,8 +2,8 @@ package com.jyjun.projectbp.presentation;
 
 import com.jyjun.projectbp.common.dto.ErrorResponse;
 import com.jyjun.projectbp.common.exception.BusinessException;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,11 +20,11 @@ public class GlobalExceptionHandler {
     }
 
     // DTO 검증 실패 시 발생하는 예외 처리
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException e) {
-        String message = e.getConstraintViolations().stream()
-                .map(cv -> cv.getMessage())
-                .collect(Collectors.joining(", "));
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(fe -> fe.getDefaultMessage())
+                .collect(Collectors.joining(", ")); // 필드 오류를 콤마로 구분하여 하나의 문자열로 통합하는 작업. 어떤 필드가 오류인지 응답으로 확인 가능함!
         ErrorResponse body = new ErrorResponse(400, "VALIDATION_ERROR", message);
         return ResponseEntity.badRequest().body(body);
     }
