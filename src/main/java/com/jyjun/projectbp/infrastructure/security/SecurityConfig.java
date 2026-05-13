@@ -72,8 +72,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/accounts/{accountId}/game-permissions/{gameId}").authenticated()
 
                         // Developer 도메인
+                        .requestMatchers(HttpMethod.POST, "/developers").permitAll() // 개발자 등록을 해야 루트 계정이 만들어짐. 이 API는 공개되어 있어야 함
                         .requestMatchers(HttpMethod.GET, "/developers").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/developers").authenticated()
                         .requestMatchers(HttpMethod.GET, "/developers/{developerId}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/developers/{developerId}").authenticated()
 
