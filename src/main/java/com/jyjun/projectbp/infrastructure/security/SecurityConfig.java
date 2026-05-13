@@ -87,13 +87,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/patches/{patchId}").authenticated()
                         .requestMatchers(HttpMethod.POST, "/patches/{patchId}/catalog").authenticated()
                         .requestMatchers(HttpMethod.POST, "/patches/{patchId}/catalog-hash").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/patches/{patchId}/bundles").authenticated()
                         .requestMatchers(HttpMethod.GET, "/patches/{patchId}/catalog/uploaded").authenticated()
                         .requestMatchers(HttpMethod.GET, "/patches/{patchId}/catalog-hash/uploaded").authenticated()
                         .requestMatchers(HttpMethod.GET, "/patches/{patchId}/bundles").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}/catalog").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}/catalog-hash").authenticated()
                         .requestMatchers(HttpMethod.GET, "/games/{gameId}/bundles").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/games/{gameId}/bundles").authenticated()
 
                         // Permission 도메인
                         .requestMatchers(HttpMethod.PUT, "/developers/{developerId}/permissions/{accountId}").authenticated()

@@ -4,6 +4,7 @@ import com.jyjun.projectbp.application.patch.model.input.CreatePatchInput;
 import com.jyjun.projectbp.application.patch.model.input.UpdatePatchNoteInput;
 import com.jyjun.projectbp.application.patch.model.input.UploadBundleInput;
 import com.jyjun.projectbp.application.patch.model.input.UploadCatalogHashInput;
+import com.jyjun.projectbp.domain.patch.enums.PatchPlatform;
 import com.jyjun.projectbp.application.patch.model.input.UploadCatalogInput;
 import com.jyjun.projectbp.application.patch.model.output.CreatePatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
@@ -153,9 +154,10 @@ public class PatchController {
         throw new MissingFileException("catalogHash 파일이 필요합니다.");
     }
 
-    @PostMapping(value = "/patches/{patchId}/bundles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/games/{gameId}/bundles", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void uploadBundle(
-            @PathVariable Long patchId,
+            @PathVariable Long gameId,
+            @RequestParam PatchPlatform platform,
             HttpServletRequest request
     ) throws Exception {
         JakartaServletFileUpload upload = new JakartaServletFileUpload();
@@ -164,7 +166,7 @@ public class PatchController {
         while (iterator.hasNext()) {
             FileItemInput item = iterator.next();
             if (!item.isFormField()) {
-                uploadBundleUseCase.execute(new UploadBundleInput(patchId, item.getName(), item.getInputStream()));
+                uploadBundleUseCase.execute(new UploadBundleInput(gameId, platform, item.getName(), item.getInputStream()));
                 return;
             }
         }
