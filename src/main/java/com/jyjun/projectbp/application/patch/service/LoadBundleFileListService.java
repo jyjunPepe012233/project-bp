@@ -15,11 +15,11 @@ public class LoadBundleFileListService {
         this.addressableFileStoragePort = addressableFileStoragePort;
     }
 
-    public List<String> load(String gameUuid, String version, PatchPlatform platform) {
+    public List<String> load(String gameUuid, PatchPlatform platform, String version) {
         return addressableFileStoragePort.listBundleFiles(
                 gameUuid,
-                version,
-                platform.getFormattedName()
+                platform.getFormattedName(),
+                version
         );
     }
 }

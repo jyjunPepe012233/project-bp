@@ -74,8 +74,8 @@ public class LoadBundleFileListUseCase {
 
         List<String> filenames = loadBundleFileListService.load(
                 game.getUuid().toString(),
-                patch.getVersion(),
-                patch.getPlatform()
+                patch.getPlatform(),
+                patch.getVersion()
         );
 
         return new LoadBundleFileListOutput(filenames);

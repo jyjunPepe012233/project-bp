@@ -74,8 +74,8 @@ public class LoadPatchUseCase {
         String gameUuid = game.getUuid().toString();
         String platform = patch.getPlatform().getFormattedName();
 
-        boolean catalogUploaded = addressableFileStoragePort.catalogExists(gameUuid, patch.getVersion(), platform);
-        boolean catalogHashUploaded = addressableFileStoragePort.catalogHashExists(gameUuid, patch.getVersion(), platform);
+        boolean catalogUploaded = addressableFileStoragePort.catalogExists(gameUuid, platform, patch.getVersion());
+        boolean catalogHashUploaded = addressableFileStoragePort.catalogHashExists(gameUuid, platform, patch.getVersion());
 
         return new LoadPatchOutput(
                 patch.getId(),

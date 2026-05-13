@@ -67,6 +67,6 @@ public class DeleteCatalogHashUseCase {
         }
 
         String gameUuid = game.getUuid().toString();
-        deleteCatalogService.deleteCatalogHash(gameUuid, patch.getVersion(), patch.getPlatform());
+        deleteCatalogService.deleteCatalogHash(gameUuid, patch.getPlatform(), patch.getVersion());
     }
 }

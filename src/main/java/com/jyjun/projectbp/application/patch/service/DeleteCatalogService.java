@@ -13,11 +13,11 @@ public class DeleteCatalogService {
         this.addressableFileStoragePort = addressableFileStoragePort;
     }
 
-    public void deleteCatalog(String gameUuid, String version, PatchPlatform platform) {
-        addressableFileStoragePort.deleteCatalog(gameUuid, version, platform.getFormattedName());
+    public void deleteCatalog(String gameUuid, PatchPlatform platform, String version) {
+        addressableFileStoragePort.deleteCatalog(gameUuid, platform.getFormattedName(), version);
     }
 
-    public void deleteCatalogHash(String gameUuid, String version, PatchPlatform platform) {
-        addressableFileStoragePort.deleteCatalogHash(gameUuid, version, platform.getFormattedName());
+    public void deleteCatalogHash(String gameUuid, PatchPlatform platform, String version) {
+        addressableFileStoragePort.deleteCatalogHash(gameUuid, platform.getFormattedName(), version);
     }
 }

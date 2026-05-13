@@ -77,8 +77,8 @@ public class LoadPatchListUseCase {
         return loadPatchService.loadByGameId(gameId).stream()
                 .map(p -> {
                     String platform = p.getPlatform().getFormattedName();
-                    boolean catalogUploaded = addressableFileStoragePort.catalogExists(gameUuid, p.getVersion(), platform);
-                    boolean catalogHashUploaded = addressableFileStoragePort.catalogHashExists(gameUuid, p.getVersion(), platform);
+                    boolean catalogUploaded = addressableFileStoragePort.catalogExists(gameUuid, platform, p.getVersion());
+                    boolean catalogHashUploaded = addressableFileStoragePort.catalogHashExists(gameUuid, platform, p.getVersion());
 
                     return new LoadPatchOutput(
                             p.getId(),

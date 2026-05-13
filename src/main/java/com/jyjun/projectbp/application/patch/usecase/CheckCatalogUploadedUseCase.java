@@ -55,7 +55,7 @@ public class CheckCatalogUploadedUseCase {
         String gameUuid = game.getUuid().toString();
         String platform = patch.getPlatform().getFormattedName();
 
-        boolean uploaded = addressableFileStoragePort.catalogExists(gameUuid, patch.getVersion(), platform);
+        boolean uploaded = addressableFileStoragePort.catalogExists(gameUuid, platform, patch.getVersion());
         return new CatalogUploadedOutput(uploaded);
     }
 
@@ -65,7 +65,7 @@ public class CheckCatalogUploadedUseCase {
         String gameUuid = game.getUuid().toString();
         String platform = patch.getPlatform().getFormattedName();
 
-        boolean uploaded = addressableFileStoragePort.catalogHashExists(gameUuid, patch.getVersion(), platform);
+        boolean uploaded = addressableFileStoragePort.catalogHashExists(gameUuid, platform, patch.getVersion());
         return new CatalogUploadedOutput(uploaded);
     }
 

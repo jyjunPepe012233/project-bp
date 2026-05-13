@@ -15,11 +15,11 @@ public class SaveCatalogService {
         this.addressableFileStoragePort = addressableFileStoragePort;
     }
 
-    public void saveCatalog(String gameUuid, String version, PatchPlatform platform, InputStream data) {
-        addressableFileStoragePort.saveCatalog(gameUuid, version, platform.getFormattedName(), data);
+    public void saveCatalog(String gameUuid, PatchPlatform platform, String version, InputStream data) {
+        addressableFileStoragePort.saveCatalog(gameUuid, platform.getFormattedName(), version, data);
     }
 
-    public void saveCatalogHash(String gameUuid, String version, PatchPlatform platform, InputStream data) {
-        addressableFileStoragePort.saveCatalogHash(gameUuid, version, platform.getFormattedName(), data);
+    public void saveCatalogHash(String gameUuid, PatchPlatform platform, String version, InputStream data) {
+        addressableFileStoragePort.saveCatalogHash(gameUuid, platform.getFormattedName(), version, data);
     }
 }

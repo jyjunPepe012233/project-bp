@@ -74,7 +74,7 @@ public class UploadCatalogHashUseCase {
         }
 
         String gameUuid = game.getUuid().toString();
-        saveCatalogService.saveCatalogHash(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogHashData());
+        saveCatalogService.saveCatalogHash(gameUuid, patch.getPlatform(), patch.getVersion(), input.catalogHashData());
 
         return new UploadCatalogHashOutput(patch.getId(), patch.getGameId(), patch.getVersion(), patch.getPlatform(), patch.getPatchNote());
     }

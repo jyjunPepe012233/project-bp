@@ -72,6 +72,6 @@ public class UploadBundleUseCase {
             throw new AccessDeniedException("패치 파일을 업로드할 권한이 없습니다.");
         }
 
-        saveBundleService.save(game.getUuid().toString(), patch.getVersion(), patch.getPlatform(), input.filename(), input.data());
+        saveBundleService.save(game.getUuid().toString(), patch.getPlatform(), patch.getVersion(), input.filename(), input.data());
     }
 }

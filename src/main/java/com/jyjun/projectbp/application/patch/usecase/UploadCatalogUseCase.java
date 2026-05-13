@@ -74,7 +74,7 @@ public class UploadCatalogUseCase {
         }
 
         String gameUuid = game.getUuid().toString();
-        saveCatalogService.saveCatalog(gameUuid, patch.getVersion(), patch.getPlatform(), input.catalogData());
+        saveCatalogService.saveCatalog(gameUuid, patch.getPlatform(), patch.getVersion(), input.catalogData());
 
         return new UploadCatalogOutput(patch.getId(), patch.getGameId(), patch.getVersion(), patch.getPlatform(), patch.getPatchNote());
     }

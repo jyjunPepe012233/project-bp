@@ -34,42 +34,42 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     }
 
     @Override
-    public void saveCatalog(String gameUuid, String version, String platform, InputStream data) {
-        saveCatalogFile(gameUuid, version, platform, CATALOG_FILENAME, data);
+    public void saveCatalog(String gameUuid, String platform, String version, InputStream data) {
+        saveCatalogFile(gameUuid, platform, version, CATALOG_FILENAME, data);
     }
 
     @Override
-    public void deleteCatalog(String gameUuid, String version, String platform) {
-        deleteCatalogFile(gameUuid, version, platform, CATALOG_FILENAME);
+    public void deleteCatalog(String gameUuid, String platform, String version) {
+        deleteCatalogFile(gameUuid, platform, version, CATALOG_FILENAME);
     }
 
     @Override
-    public boolean catalogExists(String gameUuid, String version, String platform) {
-        return catalogFileExists(gameUuid, version, platform, CATALOG_FILENAME);
+    public boolean catalogExists(String gameUuid, String platform, String version) {
+        return catalogFileExists(gameUuid, platform, version, CATALOG_FILENAME);
     }
 
     @Override
-    public void saveCatalogHash(String gameUuid, String version, String platform, InputStream data) {
-        saveCatalogFile(gameUuid, version, platform, CATALOG_HASH_FILENAME, data);
+    public void saveCatalogHash(String gameUuid, String platform, String version, InputStream data) {
+        saveCatalogFile(gameUuid, platform, version, CATALOG_HASH_FILENAME, data);
     }
 
     @Override
-    public void deleteCatalogHash(String gameUuid, String version, String platform) {
-        deleteCatalogFile(gameUuid, version, platform, CATALOG_HASH_FILENAME);
+    public void deleteCatalogHash(String gameUuid, String platform, String version) {
+        deleteCatalogFile(gameUuid, platform, version, CATALOG_HASH_FILENAME);
     }
 
     @Override
-    public boolean catalogHashExists(String gameUuid, String version, String platform) {
-        return catalogFileExists(gameUuid, version, platform, CATALOG_HASH_FILENAME);
+    public boolean catalogHashExists(String gameUuid, String platform, String version) {
+        return catalogFileExists(gameUuid, platform, version, CATALOG_HASH_FILENAME);
     }
 
     @Override
-    public void saveBundle(String gameUuid, String version, String platform, String filename, InputStream data) {
-        validatePathSegment(version);
+    public void saveBundle(String gameUuid, String platform, String version, String filename, InputStream data) {
         validatePathSegment(platform);
+        validatePathSegment(version);
         validatePathSegment(filename);
 
-        Path targetDir = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve("bundles");
+        Path targetDir = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve("bundles");
 
         try {
             Files.createDirectories(targetDir);
@@ -80,12 +80,12 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     }
 
     @Override
-    public void deleteBundle(String gameUuid, String version, String platform, String filename) {
-        validatePathSegment(version);
+    public void deleteBundle(String gameUuid, String platform, String version, String filename) {
         validatePathSegment(platform);
+        validatePathSegment(version);
         validatePathSegment(filename);
 
-        Path target = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve("bundles").resolve(filename);
+        Path target = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve("bundles").resolve(filename);
 
         try {
             Files.deleteIfExists(target);
@@ -95,11 +95,11 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     }
 
     @Override
-    public List<String> listBundleFiles(String gameUuid, String version, String platform) {
-        validatePathSegment(version);
+    public List<String> listBundleFiles(String gameUuid, String platform, String version) {
         validatePathSegment(platform);
+        validatePathSegment(version);
 
-        Path bundleDir = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve("bundles");
+        Path bundleDir = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve("bundles");
 
         if (!Files.isDirectory(bundleDir)) {
             return Collections.emptyList();
@@ -116,11 +116,11 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
         }
     }
 
-    private void saveCatalogFile(String gameUuid, String version, String platform, String filename, InputStream data) {
-        validatePathSegment(version);
+    private void saveCatalogFile(String gameUuid, String platform, String version, String filename, InputStream data) {
         validatePathSegment(platform);
+        validatePathSegment(version);
 
-        Path targetDir = patchesDir.resolve(gameUuid).resolve(version).resolve(platform);
+        Path targetDir = patchesDir.resolve(gameUuid).resolve(platform).resolve(version);
 
         try {
             Files.createDirectories(targetDir);
@@ -130,11 +130,11 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
         }
     }
 
-    private void deleteCatalogFile(String gameUuid, String version, String platform, String filename) {
-        validatePathSegment(version);
+    private void deleteCatalogFile(String gameUuid, String platform, String version, String filename) {
         validatePathSegment(platform);
+        validatePathSegment(version);
 
-        Path target = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve(filename);
+        Path target = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve(filename);
 
         try {
             Files.deleteIfExists(target);
@@ -143,11 +143,11 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
         }
     }
 
-    private boolean catalogFileExists(String gameUuid, String version, String platform, String filename) {
-        validatePathSegment(version);
+    private boolean catalogFileExists(String gameUuid, String platform, String version, String filename) {
         validatePathSegment(platform);
+        validatePathSegment(version);
 
-        Path target = patchesDir.resolve(gameUuid).resolve(version).resolve(platform).resolve(filename);
+        Path target = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve(filename);
         return Files.isRegularFile(target);
     }
 
