@@ -10,6 +10,7 @@ import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
 import com.jyjun.projectbp.application.patch.model.output.UpdatePatchNoteOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
 import com.jyjun.projectbp.application.patch.model.output.LoadBundleFileListOutput;
+import com.jyjun.projectbp.application.patch.model.output.LoadGameBundleListOutput;
 import com.jyjun.projectbp.application.patch.model.output.UploadCatalogOutput;
 import com.jyjun.projectbp.application.patch.model.output.CatalogUploadedOutput;
 import com.jyjun.projectbp.application.patch.usecase.CheckCatalogUploadedUseCase;
@@ -20,6 +21,7 @@ import com.jyjun.projectbp.application.patch.usecase.LoadPatchListUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadPatchUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UpdatePatchNoteUseCase;
 import com.jyjun.projectbp.application.patch.usecase.LoadBundleFileListUseCase;
+import com.jyjun.projectbp.application.patch.usecase.LoadGameBundleListUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadBundleUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogHashUseCase;
 import com.jyjun.projectbp.application.patch.usecase.UploadCatalogUseCase;
@@ -49,6 +51,7 @@ public class PatchController {
     private final DeleteCatalogHashUseCase deleteCatalogHashUseCase;
     private final UploadBundleUseCase uploadBundleUseCase;
     private final LoadBundleFileListUseCase loadBundleFileListUseCase;
+    private final LoadGameBundleListUseCase loadGameBundleListUseCase;
 
     public PatchController(
             CreatePatchUseCase createPatchUseCase,
@@ -61,7 +64,8 @@ public class PatchController {
             DeleteCatalogUseCase deleteCatalogUseCase,
             DeleteCatalogHashUseCase deleteCatalogHashUseCase,
             UploadBundleUseCase uploadBundleUseCase,
-            LoadBundleFileListUseCase loadBundleFileListUseCase
+            LoadBundleFileListUseCase loadBundleFileListUseCase,
+            LoadGameBundleListUseCase loadGameBundleListUseCase
     ) {
         this.createPatchUseCase = createPatchUseCase;
         this.loadPatchListUseCase = loadPatchListUseCase;
@@ -74,6 +78,7 @@ public class PatchController {
         this.deleteCatalogHashUseCase = deleteCatalogHashUseCase;
         this.uploadBundleUseCase = uploadBundleUseCase;
         this.loadBundleFileListUseCase = loadBundleFileListUseCase;
+        this.loadGameBundleListUseCase = loadGameBundleListUseCase;
     }
 
 
@@ -190,5 +195,10 @@ public class PatchController {
     @DeleteMapping("/patches/{patchId}/catalog-hash")
     public void deleteCatalogHash(@PathVariable Long patchId) {
         deleteCatalogHashUseCase.execute(patchId);
+    }
+
+    @GetMapping("/games/{gameId}/bundles")
+    public ResponseData<LoadGameBundleListOutput> loadGameBundleList(@PathVariable Long gameId) {
+        return new ResponseData<>(loadGameBundleListUseCase.execute(gameId));
     }
 }

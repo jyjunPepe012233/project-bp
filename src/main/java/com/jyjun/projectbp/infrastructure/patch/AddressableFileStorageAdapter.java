@@ -64,12 +64,11 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     }
 
     @Override
-    public void saveBundle(String gameUuid, String platform, String version, String filename, InputStream data) {
+    public void saveBundle(String gameUuid, String platform, String filename, InputStream data) {
         validatePathSegment(platform);
-        validatePathSegment(version);
         validatePathSegment(filename);
 
-        Path targetDir = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve("bundles");
+        Path targetDir = patchesDir.resolve(gameUuid).resolve(platform).resolve("bundles");
 
         try {
             Files.createDirectories(targetDir);
@@ -80,12 +79,11 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     }
 
     @Override
-    public void deleteBundle(String gameUuid, String platform, String version, String filename) {
+    public void deleteBundle(String gameUuid, String platform, String filename) {
         validatePathSegment(platform);
-        validatePathSegment(version);
         validatePathSegment(filename);
 
-        Path target = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve("bundles").resolve(filename);
+        Path target = patchesDir.resolve(gameUuid).resolve(platform).resolve("bundles").resolve(filename);
 
         try {
             Files.deleteIfExists(target);
@@ -95,11 +93,10 @@ public class AddressableFileStorageAdapter implements AddressableFileStoragePort
     }
 
     @Override
-    public List<String> listBundleFiles(String gameUuid, String platform, String version) {
+    public List<String> listBundleFiles(String gameUuid, String platform) {
         validatePathSegment(platform);
-        validatePathSegment(version);
 
-        Path bundleDir = patchesDir.resolve(gameUuid).resolve(platform).resolve(version).resolve("bundles");
+        Path bundleDir = patchesDir.resolve(gameUuid).resolve(platform).resolve("bundles");
 
         if (!Files.isDirectory(bundleDir)) {
             return Collections.emptyList();

@@ -4,9 +4,9 @@ import com.jyjun.projectbp.application.auth.service.LoadCurrentAccountService;
 import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
-import com.jyjun.projectbp.application.patch.model.output.LoadBundleFileListOutput;
-import com.jyjun.projectbp.application.patch.service.LoadBundleFileListService;
-import com.jyjun.projectbp.application.patch.service.LoadPatchService;
+import com.jyjun.projectbp.application.patch.model.output.LoadGameBundleListOutput;
+import com.jyjun.projectbp.application.patch.model.output.LoadGameBundleListOutput.PlatformBundleEntry;
+import com.jyjun.projectbp.application.patch.outbound.AddressableFileStoragePort;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
@@ -15,68 +15,64 @@ import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
 import com.jyjun.projectbp.domain.game.model.Game;
 import com.jyjun.projectbp.domain.gameaccesspermission.enums.GameAccessPermissionType;
-import com.jyjun.projectbp.domain.patch.model.Patch;
+import com.jyjun.projectbp.domain.patch.enums.PatchPlatform;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class LoadBundleFileListUseCase {
+public class LoadGameBundleListUseCase {
 
     private final LoadCurrentAccountService loadCurrentAccountService;
-    private final LoadPatchService loadPatchService;
     private final LoadGameService loadGameService;
-    private final LoadBundleFileListService loadBundleFileListService;
+    private final AddressableFileStoragePort addressableFileStoragePort;
 
     private final IsRootAccountOfDeveloperUtil isRootAccountOfDeveloperUtil;
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
     private final HasGameAccessPermissionUtil hasGameAccessPermissionUtil;
 
-    public LoadBundleFileListUseCase(
+    public LoadGameBundleListUseCase(
             LoadCurrentAccountService loadCurrentAccountService,
-            LoadPatchService loadPatchService,
             LoadGameService loadGameService,
-            LoadBundleFileListService loadBundleFileListService,
+            AddressableFileStoragePort addressableFileStoragePort,
             LoadDeveloperService loadDeveloperService,
             LoadDeveloperAccessPermissionService loadDeveloperAccessPermissionService,
             LoadGameAccessPermissionService loadGameAccessPermissionService
     ) {
         this.loadCurrentAccountService = loadCurrentAccountService;
-        this.loadPatchService = loadPatchService;
         this.loadGameService = loadGameService;
-        this.loadBundleFileListService = loadBundleFileListService;
+        this.addressableFileStoragePort = addressableFileStoragePort;
 
         this.isRootAccountOfDeveloperUtil = new IsRootAccountOfDeveloperUtil(loadDeveloperService);
         this.hasDeveloperAccessPermissionUtil = new HasDeveloperAccessPermissionUtil(loadDeveloperAccessPermissionService);
         this.hasGameAccessPermissionUtil = new HasGameAccessPermissionUtil(loadGameAccessPermissionService);
     }
 
-    public LoadBundleFileListOutput execute(Long patchId) {
+    public LoadGameBundleListOutput execute(Long gameId) {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
-        Patch patch = loadPatchService.loadByIdOrThrow(patchId);
-        Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
+        Game game = loadGameService.loadByIdOrThrow(gameId);
         Long developerId = game.getDeveloperId();
-        Long gameId = game.getId();
 
         if (isRootAccountOfDeveloperUtil.is(currentAccountId, developerId)) {
-            // 루트 계정이면 통과
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.ADMIN)) {
-            // 개발자 ADMIN 권한 있으면 통과
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.PUBLISHER)) {
-            // 개발자 PUBLISHER 권한 있으면 통과
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.ADMIN)) {
-            // 게임 ADMIN 권한 있으면 통과
+        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.PRIMARY_WRITE)) {
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.MAINTAIN)) {
-            // 게임 MAINTAIN 권한 있으면 통과
         } else {
-            throw new AccessDeniedException("번들 파일 목록을 조회할 권한이 없습니다.");
+            throw new AccessDeniedException("번들 목록을 조회할 권한이 없습니다.");
         }
 
-        List<String> filenames = loadBundleFileListService.load(
-                game.getUuid().toString(),
-                patch.getPlatform()
-        );
+        String gameUuid = game.getUuid().toString();
 
-        return new LoadBundleFileListOutput(filenames);
+        List<PlatformBundleEntry> platforms = Arrays.stream(PatchPlatform.values())
+                .map(p -> new PlatformBundleEntry(
+                        p.getFormattedName(),
+                        addressableFileStoragePort.listBundleFiles(gameUuid, p.getFormattedName())
+                ))
+                .toList();
+
+        return new LoadGameBundleListOutput(platforms);
     }
 }

@@ -15,11 +15,10 @@ public class SaveBundleService {
         this.addressableFileStoragePort = addressableFileStoragePort;
     }
 
-    public void save(String gameUuid, PatchPlatform platform, String version, String filename, InputStream data) {
+    public void save(String gameUuid, PatchPlatform platform, String filename, InputStream data) {
         addressableFileStoragePort.saveBundle(
                 gameUuid,
                 platform.getFormattedName(),
-                version,
                 filename,
                 data
         );

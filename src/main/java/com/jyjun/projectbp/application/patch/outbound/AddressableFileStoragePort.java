@@ -17,9 +17,9 @@ public interface AddressableFileStoragePort {
 
     boolean catalogHashExists(String gameUuid, String platform, String version);
 
-    void saveBundle(String gameUuid, String platform, String version, String filename, InputStream data);
+    void saveBundle(String gameUuid, String platform, String filename, InputStream data);
 
-    void deleteBundle(String gameUuid, String platform, String version, String filename);
+    void deleteBundle(String gameUuid, String platform, String filename);
 
-    List<String> listBundleFiles(String gameUuid, String platform, String version);
+    List<String> listBundleFiles(String gameUuid, String platform);
 }
