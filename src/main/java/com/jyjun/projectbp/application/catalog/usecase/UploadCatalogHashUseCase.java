@@ -1,13 +1,13 @@
-package com.jyjun.projectbp.application.patch.usecase;
+package com.jyjun.projectbp.application.catalog.usecase;
 
 import com.jyjun.projectbp.application.auth.service.LoadCurrentAccountService;
+import com.jyjun.projectbp.application.catalog.model.input.UploadCatalogHashInput;
+import com.jyjun.projectbp.application.catalog.model.output.UploadCatalogHashOutput;
+import com.jyjun.projectbp.application.catalog.service.SaveCatalogService;
 import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
-import com.jyjun.projectbp.application.patch.model.input.UploadCatalogHashInput;
-import com.jyjun.projectbp.application.patch.model.output.UploadCatalogHashOutput;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
-import com.jyjun.projectbp.application.patch.service.SaveCatalogService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;

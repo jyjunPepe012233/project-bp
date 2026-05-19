@@ -1,10 +1,10 @@
-package com.jyjun.projectbp.application.patch.usecase;
+package com.jyjun.projectbp.application.catalog.usecase;
 
 import com.jyjun.projectbp.application.auth.service.LoadCurrentAccountService;
+import com.jyjun.projectbp.application.catalog.service.DeleteCatalogService;
 import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
-import com.jyjun.projectbp.application.patch.service.DeleteCatalogService;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
@@ -19,7 +19,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DeleteCatalogHashUseCase {
+public class DeleteCatalogUseCase {
 
     private final LoadCurrentAccountService loadCurrentAccountService;
     private final LoadPatchService loadPatchService;
@@ -30,7 +30,7 @@ public class DeleteCatalogHashUseCase {
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
     private final HasGameAccessPermissionUtil hasGameAccessPermissionUtil;
 
-    public DeleteCatalogHashUseCase(
+    public DeleteCatalogUseCase(
             LoadCurrentAccountService loadCurrentAccountService,
             LoadPatchService loadPatchService,
             LoadGameService loadGameService,
@@ -63,10 +63,10 @@ public class DeleteCatalogHashUseCase {
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.ADMIN)) {
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.MAINTAIN)) {
         } else {
-            throw new AccessDeniedException("카탈로그 해시를 삭제할 권한이 없습니다.");
+            throw new AccessDeniedException("카탈로그를 삭제할 권한이 없습니다.");
         }
 
         String gameUuid = game.getUuid().toString();
-        deleteCatalogService.deleteCatalogHash(gameUuid, patch.getPlatform(), patch.getVersion());
+        deleteCatalogService.deleteCatalog(gameUuid, patch.getPlatform(), patch.getVersion());
     }
 }

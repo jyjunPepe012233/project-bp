@@ -1,9 +1,8 @@
-package com.jyjun.projectbp.application.patch.outbound;
+package com.jyjun.projectbp.application.catalog.outbound;
 
 import java.io.InputStream;
-import java.util.List;
 
-public interface AddressableFileStoragePort {
+public interface CatalogFileStoragePort {
 
     void saveCatalog(String gameUuid, String platform, String version, InputStream data);
 
@@ -16,10 +15,4 @@ public interface AddressableFileStoragePort {
     void deleteCatalogHash(String gameUuid, String platform, String version);
 
     boolean catalogHashExists(String gameUuid, String platform, String version);
-
-    void saveBundle(String gameUuid, String platform, String filename, InputStream data);
-
-    void deleteBundle(String gameUuid, String platform, String filename);
-
-    List<String> listBundleFiles(String gameUuid, String platform);
 }

@@ -1,11 +1,11 @@
-package com.jyjun.projectbp.application.patch.usecase;
+package com.jyjun.projectbp.application.bundle.usecase;
 
 import com.jyjun.projectbp.application.auth.service.LoadCurrentAccountService;
+import com.jyjun.projectbp.application.bundle.model.output.LoadBundleFileListOutput;
+import com.jyjun.projectbp.application.bundle.service.LoadBundleFileListService;
 import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
-import com.jyjun.projectbp.application.patch.model.output.CatalogUploadedOutput;
-import com.jyjun.projectbp.application.patch.outbound.AddressableFileStoragePort;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
@@ -18,58 +18,40 @@ import com.jyjun.projectbp.domain.gameaccesspermission.enums.GameAccessPermissio
 import com.jyjun.projectbp.domain.patch.model.Patch;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class CheckCatalogUploadedUseCase {
+public class LoadBundleFileListUseCase {
 
     private final LoadCurrentAccountService loadCurrentAccountService;
-    private final LoadGameService loadGameService;
     private final LoadPatchService loadPatchService;
-    private final AddressableFileStoragePort addressableFileStoragePort;
+    private final LoadGameService loadGameService;
+    private final LoadBundleFileListService loadBundleFileListService;
 
     private final IsRootAccountOfDeveloperUtil isRootAccountOfDeveloperUtil;
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
     private final HasGameAccessPermissionUtil hasGameAccessPermissionUtil;
 
-    public CheckCatalogUploadedUseCase(
+    public LoadBundleFileListUseCase(
             LoadCurrentAccountService loadCurrentAccountService,
-            LoadGameService loadGameService,
             LoadPatchService loadPatchService,
-            AddressableFileStoragePort addressableFileStoragePort,
+            LoadGameService loadGameService,
+            LoadBundleFileListService loadBundleFileListService,
             LoadDeveloperService loadDeveloperService,
             LoadDeveloperAccessPermissionService loadDeveloperAccessPermissionService,
             LoadGameAccessPermissionService loadGameAccessPermissionService
     ) {
         this.loadCurrentAccountService = loadCurrentAccountService;
-        this.loadGameService = loadGameService;
         this.loadPatchService = loadPatchService;
-        this.addressableFileStoragePort = addressableFileStoragePort;
+        this.loadGameService = loadGameService;
+        this.loadBundleFileListService = loadBundleFileListService;
 
         this.isRootAccountOfDeveloperUtil = new IsRootAccountOfDeveloperUtil(loadDeveloperService);
         this.hasDeveloperAccessPermissionUtil = new HasDeveloperAccessPermissionUtil(loadDeveloperAccessPermissionService);
         this.hasGameAccessPermissionUtil = new HasGameAccessPermissionUtil(loadGameAccessPermissionService);
     }
 
-    public CatalogUploadedOutput checkCatalog(Long patchId) {
-        Patch patch = loadAndAuthorize(patchId);
-        Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
-        String gameUuid = game.getUuid().toString();
-        String platform = patch.getPlatform().getFormattedName();
-
-        boolean uploaded = addressableFileStoragePort.catalogExists(gameUuid, platform, patch.getVersion());
-        return new CatalogUploadedOutput(uploaded);
-    }
-
-    public CatalogUploadedOutput checkCatalogHash(Long patchId) {
-        Patch patch = loadAndAuthorize(patchId);
-        Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
-        String gameUuid = game.getUuid().toString();
-        String platform = patch.getPlatform().getFormattedName();
-
-        boolean uploaded = addressableFileStoragePort.catalogHashExists(gameUuid, platform, patch.getVersion());
-        return new CatalogUploadedOutput(uploaded);
-    }
-
-    private Patch loadAndAuthorize(Long patchId) {
+    public LoadBundleFileListOutput execute(Long patchId) {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
         Patch patch = loadPatchService.loadByIdOrThrow(patchId);
         Game game = loadGameService.loadByIdOrThrow(patch.getGameId());
@@ -77,15 +59,24 @@ public class CheckCatalogUploadedUseCase {
         Long gameId = game.getId();
 
         if (isRootAccountOfDeveloperUtil.is(currentAccountId, developerId)) {
+            // 루트 계정이면 통과
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.ADMIN)) {
+            // 개발자 ADMIN 권한 있으면 통과
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.PUBLISHER)) {
+            // 개발자 PUBLISHER 권한 있으면 통과
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.ADMIN)) {
-        } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.PRIMARY_WRITE)) {
+            // 게임 ADMIN 권한 있으면 통과
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.MAINTAIN)) {
+            // 게임 MAINTAIN 권한 있으면 통과
         } else {
-            throw new AccessDeniedException("카탈로그 상태를 조회할 권한이 없습니다.");
+            throw new AccessDeniedException("번들 파일 목록을 조회할 권한이 없습니다.");
         }
 
-        return patch;
+        List<String> filenames = loadBundleFileListService.load(
+                game.getUuid().toString(),
+                patch.getPlatform()
+        );
+
+        return new LoadBundleFileListOutput(filenames);
     }
 }

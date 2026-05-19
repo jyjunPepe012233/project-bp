@@ -1,4 +1,4 @@
-package com.jyjun.projectbp.application.patch.model.output;
+package com.jyjun.projectbp.application.bundle.model.output;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.jyjun.projectbp.application.patch.model.input;
+package com.jyjun.projectbp.application.catalog.model.input;
 
 import java.io.InputStream;
 

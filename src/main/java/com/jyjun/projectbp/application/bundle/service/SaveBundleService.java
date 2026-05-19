@@ -1,6 +1,6 @@
-package com.jyjun.projectbp.application.patch.service;
+package com.jyjun.projectbp.application.bundle.service;
 
-import com.jyjun.projectbp.application.patch.outbound.AddressableFileStoragePort;
+import com.jyjun.projectbp.application.bundle.outbound.BundleFileStoragePort;
 import com.jyjun.projectbp.domain.patch.enums.PatchPlatform;
 import org.springframework.stereotype.Component;
 
@@ -9,14 +9,14 @@ import java.io.InputStream;
 @Component
 public class SaveBundleService {
 
-    private final AddressableFileStoragePort addressableFileStoragePort;
+    private final BundleFileStoragePort bundleFileStoragePort;
 
-    public SaveBundleService(AddressableFileStoragePort addressableFileStoragePort) {
-        this.addressableFileStoragePort = addressableFileStoragePort;
+    public SaveBundleService(BundleFileStoragePort bundleFileStoragePort) {
+        this.bundleFileStoragePort = bundleFileStoragePort;
     }
 
     public void save(String gameUuid, PatchPlatform platform, String filename, InputStream data) {
-        addressableFileStoragePort.saveBundle(
+        bundleFileStoragePort.saveBundle(
                 gameUuid,
                 platform.getFormattedName(),
                 filename,

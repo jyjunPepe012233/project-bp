@@ -1,4 +1,4 @@
-package com.jyjun.projectbp.application.patch.model.input;
+package com.jyjun.projectbp.application.bundle.model.input;
 
 import com.jyjun.projectbp.domain.patch.enums.PatchPlatform;
 

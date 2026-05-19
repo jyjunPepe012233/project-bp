@@ -1,4 +1,4 @@
-package com.jyjun.projectbp.application.patch.model.output;
+package com.jyjun.projectbp.application.catalog.model.output;
 
 public record CatalogUploadedOutput(
         boolean uploaded

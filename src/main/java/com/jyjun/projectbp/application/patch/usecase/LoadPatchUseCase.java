@@ -5,7 +5,7 @@ import com.jyjun.projectbp.application.developer.service.LoadDeveloperService;
 import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUtil;
 import com.jyjun.projectbp.application.game.service.LoadGameService;
 import com.jyjun.projectbp.application.patch.model.output.LoadPatchOutput;
-import com.jyjun.projectbp.application.patch.outbound.AddressableFileStoragePort;
+import com.jyjun.projectbp.application.catalog.outbound.CatalogFileStoragePort;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
@@ -24,7 +24,7 @@ public class LoadPatchUseCase {
     private final LoadCurrentAccountService loadCurrentAccountService;
     private final LoadGameService loadGameService;
     private final LoadPatchService loadPatchService;
-    private final AddressableFileStoragePort addressableFileStoragePort;
+    private final CatalogFileStoragePort catalogFileStoragePort;
 
     private final IsRootAccountOfDeveloperUtil isRootAccountOfDeveloperUtil;
     private final HasDeveloperAccessPermissionUtil hasDeveloperAccessPermissionUtil;
@@ -34,7 +34,7 @@ public class LoadPatchUseCase {
             LoadCurrentAccountService loadCurrentAccountService,
             LoadGameService loadGameService,
             LoadPatchService loadPatchService,
-            AddressableFileStoragePort addressableFileStoragePort,
+            CatalogFileStoragePort catalogFileStoragePort,
             LoadDeveloperService loadDeveloperService,
             LoadDeveloperAccessPermissionService loadDeveloperAccessPermissionService,
             LoadGameAccessPermissionService loadGameAccessPermissionService
@@ -42,7 +42,7 @@ public class LoadPatchUseCase {
         this.loadCurrentAccountService = loadCurrentAccountService;
         this.loadGameService = loadGameService;
         this.loadPatchService = loadPatchService;
-        this.addressableFileStoragePort = addressableFileStoragePort;
+        this.catalogFileStoragePort = catalogFileStoragePort;
 
         this.isRootAccountOfDeveloperUtil = new IsRootAccountOfDeveloperUtil(loadDeveloperService);
         this.hasDeveloperAccessPermissionUtil = new HasDeveloperAccessPermissionUtil(loadDeveloperAccessPermissionService);
@@ -74,8 +74,8 @@ public class LoadPatchUseCase {
         String gameUuid = game.getUuid().toString();
         String platform = patch.getPlatform().getFormattedName();
 
-        boolean catalogUploaded = addressableFileStoragePort.catalogExists(gameUuid, platform, patch.getVersion());
-        boolean catalogHashUploaded = addressableFileStoragePort.catalogHashExists(gameUuid, platform, patch.getVersion());
+        boolean catalogUploaded = catalogFileStoragePort.catalogExists(gameUuid, platform, patch.getVersion());
+        boolean catalogHashUploaded = catalogFileStoragePort.catalogHashExists(gameUuid, platform, patch.getVersion());
 
         return new LoadPatchOutput(
                 patch.getId(),
