@@ -19,7 +19,7 @@ public class CreatePatchService {
         if (patchRepositoryPort.existsByGameIdAndVersionAndPlatform(gameId, version, platform)) {
             throw new DuplicateResourceException("같은 버전과 플랫폼의 패치가 이미 존재합니다.");
         }
-        Patch patch = new Patch(gameId, version, platform, patchNote, null);
+        Patch patch = new Patch(gameId, version, platform, patchNote);
         return patchRepositoryPort.save(patch);
     }
 }

@@ -37,7 +37,7 @@ public class Patch {
     public Patch() {
     }
 
-    public Patch(Long gameId, String version, PatchPlatform platform, String patchNote, String fileName) {
+    public Patch(Long gameId, String version, PatchPlatform platform, String patchNote) {
         this.gameId = gameId;
         this.version = version;
         this.platform = platform;
