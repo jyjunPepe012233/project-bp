@@ -40,4 +40,3 @@ public class GlobalExceptionHandler {
 // TODO: 5월 13일 0시 55분 다음 할 일 메모
 //   지금 입력 검증(백에서는 Validation 추가, 프론트에서는 입력 조건 추가) 하는 중
 //   또, catalog의 이름을 고정하여 patch 테이블에 파일 이름을 저장하는 컬럼을 모두 삭제하고, 실제 파일을 조회하여 패치 파일 업로드 여부를 판정하도록 변경하는 작업 중
-//   위 작업 모두 끝나면 삭제 기능 추가하고 수행평가 채점 기준에 맞는지 대충 확인하고 서비스 실제로 써보기(Unity Addressable Test)
