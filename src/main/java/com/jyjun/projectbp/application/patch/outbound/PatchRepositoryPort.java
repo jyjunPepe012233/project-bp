@@ -15,4 +15,6 @@ public interface PatchRepositoryPort {
     List<Patch> findByGameId(Long gameId);
 
     boolean existsByGameIdAndVersionAndPlatform(Long gameId, String version, PatchPlatform platform);
+
+    void deleteById(Long id);
 }

@@ -36,4 +36,9 @@ public class PatchRepositoryAdapter implements PatchRepositoryPort {
     public boolean existsByGameIdAndVersionAndPlatform(Long gameId, String version, PatchPlatform platform) {
         return jpaPatchRepository.existsByGameIdAndVersionAndPlatform(gameId, version, platform);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaPatchRepository.deleteById(id);
+    }
 }
