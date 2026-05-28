@@ -14,7 +14,7 @@ services:
 
   app:
     build: .
-    image: project-bp:latest
+    image: 3317_jinyejun
     ports:
       - "8080:8080"
     depends_on:
