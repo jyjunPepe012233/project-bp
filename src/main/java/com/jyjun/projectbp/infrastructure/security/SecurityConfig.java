@@ -82,6 +82,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/games").authenticated()
                         .requestMatchers(HttpMethod.POST, "/games").authenticated()
                         .requestMatchers(HttpMethod.GET, "/games/{gameId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/games/{gameId}/version").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/games/{gameId}/version").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/games/{gameId}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/games/{gameId}").authenticated()
 
