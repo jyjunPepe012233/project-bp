@@ -81,6 +81,8 @@ public class SecurityConfig {
                         // Game 도메인
                         .requestMatchers(HttpMethod.GET, "/games").authenticated()
                         .requestMatchers(HttpMethod.POST, "/games").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/games/*/version").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/games/*/version").authenticated()
                         .requestMatchers(HttpMethod.GET, "/games/*").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/games/*").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/games/*").authenticated()

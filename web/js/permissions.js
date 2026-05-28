@@ -87,11 +87,17 @@ const permissions = (() => {
     return _isRoot(developerId) || _hasDevPerm(developerId, 'ADMIN', 'PUBLISHER') || _hasGamePerm(gameId, 'ADMIN', 'MAINTAIN');
   }
 
+  function canUpdateVersion(developerId, gameId) {
+    return _isRoot(developerId)
+      || _hasDevPerm(developerId, 'ADMIN', 'PUBLISHER')
+      || _hasGamePerm(gameId, 'ADMIN', 'MAINTAIN');
+  }
+
   return {
     load, clear,
     canViewDevelopers, canViewGames, canCreateGame,
     canViewPatches, canCreatePatch, canUploadCatalog,
     canViewBundles, canUploadBundle, canManageAccounts,
-    canWriteDeveloper, canDeleteDeveloper, canWriteGame, canDeleteGame, canWritePatch,
+    canWriteDeveloper, canDeleteDeveloper, canWriteGame, canDeleteGame, canWritePatch, canUpdateVersion,
   };
 })();

@@ -6,6 +6,7 @@ import com.jyjun.projectbp.application.patch.service.DeletePatchService;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
 import com.jyjun.projectbp.application.permission.service.DeleteGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
+import com.jyjun.projectbp.application.version.service.DeleteVersionService;
 import com.jyjun.projectbp.domain.gameaccesspermission.model.GameAccessPermission;
 import com.jyjun.projectbp.domain.patch.model.Patch;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ public class DeleteGameService {
     private final LoadGameAccessPermissionService loadGameAccessPermissionService;
     private final DeleteGameAccessPermissionService deleteGameAccessPermissionService;
     private final DeleteAccountService deleteAccountService;
+    private final DeleteVersionService deleteVersionService;
     private final GameRepositoryPort gameRepositoryPort;
 
     public DeleteGameService(
@@ -30,6 +32,7 @@ public class DeleteGameService {
             LoadGameAccessPermissionService loadGameAccessPermissionService,
             DeleteGameAccessPermissionService deleteGameAccessPermissionService,
             DeleteAccountService deleteAccountService,
+            DeleteVersionService deleteVersionService,
             GameRepositoryPort gameRepositoryPort
     ) {
         this.loadPatchService = loadPatchService;
@@ -37,6 +40,7 @@ public class DeleteGameService {
         this.loadGameAccessPermissionService = loadGameAccessPermissionService;
         this.deleteGameAccessPermissionService = deleteGameAccessPermissionService;
         this.deleteAccountService = deleteAccountService;
+        this.deleteVersionService = deleteVersionService;
         this.gameRepositoryPort = gameRepositoryPort;
     }
 
@@ -49,6 +53,7 @@ public class DeleteGameService {
         Set<Long> affectedAccountIds = collectAffectedAccountIds(gameId);
         deleteGameAccessPermissionService.deleteByGameId(gameId);
         deleteIndependentAccounts(affectedAccountIds);
+        deleteVersionService.deleteByGameId(gameId);
         gameRepositoryPort.deleteById(gameId);
     }
 
