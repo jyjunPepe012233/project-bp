@@ -143,6 +143,10 @@ const api = (() => {
       return request('PATCH', `/developers/${developerId}`, { name }, true);
     },
 
+    deleteDeveloper(developerId) {
+      return request('DELETE', `/developers/${developerId}`, undefined, true);
+    },
+
     // Game
     getGameList() {
       return request('GET', '/games', undefined, true);

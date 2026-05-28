@@ -70,6 +70,7 @@ const developersPage = (() => {
             </div>
             <div class="dev-card-footer">
               <button class="dev-card-edit-btn" data-idx="${i}">상세 / 수정</button>
+              ${permissions.canDeleteDeveloper(d.id) ? `<button class="btn-table-action dev-card-delete-btn" data-idx="${i}">삭제</button>` : ''}
             </div>
           </div>
         `).join('')}
@@ -81,6 +82,31 @@ const developersPage = (() => {
         const idx = Number(btn.dataset.idx);
         _selectedDev = _devs[idx];
         location.hash = '/developers/edit';
+      });
+    });
+
+    body.querySelectorAll('.dev-card-delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const idx = Number(btn.dataset.idx);
+        const dev = _devs[idx];
+        if (!dev) return;
+
+        if (!confirm(`개발사를 삭제하시겠습니까?\n${dev.name}\n\n소속 게임/패치/관련 계정 데이터가 함께 삭제됩니다.`)) return;
+
+        const originalLabel = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '삭제 중…';
+
+        try {
+          await api.deleteDeveloper(dev.id);
+          _devs = _devs.filter(d => d.id !== dev.id);
+          if (_selectedDev?.id === dev.id) _selectedDev = null;
+          await loadList();
+        } catch (err) {
+          alert(err.message || '개발사 삭제에 실패했습니다.');
+          btn.disabled = false;
+          btn.textContent = originalLabel;
+        }
       });
     });
   }
