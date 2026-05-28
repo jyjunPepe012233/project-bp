@@ -169,6 +169,10 @@ const api = (() => {
       return request('PATCH', `/patches/${patchId}`, { patchNote }, true);
     },
 
+    deletePatch(patchId) {
+      return request('DELETE', `/patches/${patchId}`, undefined, true);
+    },
+
     // Account
     createAccount(name, password, developerAccessPermissions, gameAccessPermissions) {
       return request('POST', '/accounts', { name, password, developerAccessPermissions, gameAccessPermissions }, true);

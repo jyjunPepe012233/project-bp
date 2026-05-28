@@ -143,7 +143,10 @@ const patchesPage = (() => {
                 <span class="patch-card-platform">${PLATFORM_LABEL[p.platform] ?? p.platform}</span>
                 <span class="patch-card-game">${escapeHtml(p.gameTitle)}</span>
                 <span class="patch-card-date">${formatDate(p.createdAt)}</span>
-                ${permissions.canWritePatch(p.devId, p.gameId) ? `<button class="btn-table-action patch-edit-btn" data-idx="${i}" style="margin-left:auto">수정</button>` : ''}
+                ${permissions.canWritePatch(p.devId, p.gameId) ? `
+                  <button class="btn-table-action patch-edit-btn" data-idx="${i}" style="margin-left:auto">수정</button>
+                  <button class="btn-table-action patch-delete-btn" data-game-id="${p.gameId}" data-patch-id="${p.id}">삭제</button>
+                ` : ''}
               </div>
               <div class="patch-card-note">${p.patchNote ? escapeHtml(p.patchNote) : '<span class="patch-note-empty">패치 노트 없음</span>'}</div>
               ${renderCatalogBar(p)}
@@ -157,6 +160,28 @@ const patchesPage = (() => {
       btn.addEventListener('click', () => {
         _selectedPatch = patches[Number(btn.dataset.idx)];
         location.hash = '/patches/edit';
+      });
+    });
+
+    body.querySelectorAll('.patch-delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const gameId = Number(btn.dataset.gameId);
+        const patchId = Number(btn.dataset.patchId);
+        if (!confirm('패치를 삭제하시겠습니까?\n카탈로그 및 카탈로그 해시 파일도 함께 삭제됩니다.')) return;
+
+        btn.disabled = true;
+        const originalLabel = btn.textContent;
+        btn.textContent = '삭제 중…';
+
+        try {
+          await api.deletePatch(patchId);
+          _allPatches = _allPatches.filter(x => !(x.id === patchId && x.gameId === gameId));
+          applyFilter();
+        } catch (err) {
+          alert(err.message || '패치 삭제에 실패했습니다.');
+          btn.disabled = false;
+          btn.textContent = originalLabel;
+        }
       });
     });
 
