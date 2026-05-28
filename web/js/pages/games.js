@@ -147,6 +147,29 @@ const gamesPage = (() => {
       ` : ''}
 
       <div class="card" style="margin-bottom:20px">
+        <div class="card-title">현재 릴리즈 버전</div>
+        <div id="game-version-body">
+          <span class="spinner" style="border-color:var(--border-dark);border-top-color:var(--text)"></span>
+        </div>
+      </div>
+
+      ${permissions.canUpdateVersion(game.developerId, game.id) ? `
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title">릴리즈 버전 설정</div>
+        <div id="game-version-edit-alert" hidden></div>
+        <form id="game-version-edit-form">
+          <div class="form-group">
+            <label class="form-label" for="game-version-patch">대상 패치</label>
+            <select id="game-version-patch" class="form-input">
+              <option value="">불러오는 중...</option>
+            </select>
+          </div>
+          <button id="game-version-edit-btn" class="btn btn-primary" type="submit" style="width:auto;padding:9px 24px">버전 저장</button>
+        </form>
+      </div>
+      ` : ''}
+
+      <div class="card" style="margin-bottom:20px">
         <div class="card-title">패치 목록</div>
         <div id="game-patches-body">
           <span class="spinner" style="border-color:var(--border-dark);border-top-color:var(--text)"></span>
@@ -164,19 +187,22 @@ const gamesPage = (() => {
 
     loadDetail(game);
     if (permissions.canWriteGame(game.developerId, game.id)) bindEditForm(game);
+    if (permissions.canUpdateVersion(game.developerId, game.id)) bindVersionEditForm(game);
   }
 
   async function loadDetail(game) {
     try {
-      const [devsRes, patchesRes, accountsRes] = await Promise.all([
+      const [devsRes, patchesRes, accountsRes, versionRes] = await Promise.all([
         api.getDeveloperList(),
         api.getPatchList(game.id),
         api.getAccountList(),
+        api.getGameVersion(game.id),
       ]);
 
       const devs     = devsRes.data ?? [];
       const patches  = patchesRes.data ?? [];
       const accounts = accountsRes.data ?? [];
+      const versionInfo = versionRes.data ?? null;
 
       const devMap = Object.fromEntries(devs.map(d => [d.id, d.name]));
 
@@ -207,6 +233,11 @@ const gamesPage = (() => {
             </div>
           </div>
         `;
+      }
+
+      renderVersionInfo(versionInfo);
+      if (permissions.canUpdateVersion(game.developerId, game.id)) {
+        renderVersionSelector(versionInfo, patches);
       }
 
       // 패치 목록
@@ -250,7 +281,45 @@ const gamesPage = (() => {
       if (detailBody) {
         detailBody.innerHTML = `<p style="font-size:13px;color:var(--error)">${escapeHtml(err.message || '불러오지 못했습니다.')}</p>`;
       }
+      const versionBody = document.getElementById('game-version-body');
+      if (versionBody) {
+        versionBody.innerHTML = `<p style="font-size:13px;color:var(--error)">${escapeHtml(err.message || '버전 정보를 불러오지 못했습니다.')}</p>`;
+      }
     }
+  }
+
+  function renderVersionInfo(versionInfo) {
+    const body = document.getElementById('game-version-body');
+    if (!body) return;
+
+    const versionLabel = versionInfo?.version ? escapeHtml(versionInfo.version) : '—';
+    const patchId = versionInfo?.patchId;
+    const modeText = patchId == null ? '자동(최신 버전)' : `수동 지정 (패치 #${patchId})`;
+
+    body.innerHTML = `
+      <div class="dev-detail-info">
+        <div class="dev-detail-row">
+          <span class="dev-detail-label">현재 버전</span>
+          <span class="dev-detail-value"><span class="version-badge">${versionLabel}</span></span>
+        </div>
+        <div class="dev-detail-row">
+          <span class="dev-detail-label">설정 모드</span>
+          <span class="dev-detail-value">${modeText}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderVersionSelector(versionInfo, patches) {
+    const sel = document.getElementById('game-version-patch');
+    if (!sel) return;
+
+    const sorted = [...patches].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    sel.innerHTML = `
+      <option value="">자동(최신 버전)</option>
+      ${sorted.map(p => `<option value="${p.id}">#${p.id} · ${escapeHtml(p.version)} · ${escapeHtml(p.platform)}</option>`).join('')}
+    `;
+    sel.value = versionInfo?.patchId == null ? '' : String(versionInfo.patchId);
   }
 
   async function loadGameAccounts(container, gameId, accounts) {
@@ -345,6 +414,45 @@ const gamesPage = (() => {
 
   function setEditAlert(type, msg) {
     const el = document.getElementById('game-edit-alert');
+    if (!el) return;
+    if (!type) { el.hidden = true; el.textContent = ''; return; }
+    el.className = `alert alert-${type}`;
+    el.textContent = msg;
+    el.hidden = false;
+  }
+
+  function bindVersionEditForm(game) {
+    const form = document.getElementById('game-version-edit-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const sel = document.getElementById('game-version-patch');
+      const raw = sel?.value ?? '';
+      const patchId = raw ? Number(raw) : null;
+
+      const btn = document.getElementById('game-version-edit-btn');
+      if (!btn) return;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+      setVersionEditAlert('');
+
+      try {
+        await api.updateGameVersion(game.id, patchId);
+        await loadDetail(game);
+        setVersionEditAlert('success', '릴리즈 버전이 저장됐습니다.');
+      } catch (err) {
+        setVersionEditAlert('error', err.message || '버전 저장에 실패했습니다.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '버전 저장';
+      }
+    });
+  }
+
+  function setVersionEditAlert(type, msg) {
+    const el = document.getElementById('game-version-edit-alert');
     if (!el) return;
     if (!type) { el.hidden = true; el.textContent = ''; return; }
     el.className = `alert alert-${type}`;

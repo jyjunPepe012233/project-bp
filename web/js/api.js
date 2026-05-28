@@ -164,6 +164,14 @@ const api = (() => {
       return request('DELETE', `/games/${gameId}`, undefined, true);
     },
 
+    getGameVersion(gameId) {
+      return request('GET', `/games/${gameId}/version`);
+    },
+
+    updateGameVersion(gameId, patchId) {
+      return request('PATCH', `/games/${gameId}/version`, { patchId }, true);
+    },
+
     // Patch
     getPatchList(gameId) {
       return request('GET', `/games/${gameId}/patches`, undefined, true);
