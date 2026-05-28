@@ -4,6 +4,7 @@ import com.jyjun.projectbp.application.developer.outbound.DeveloperRepositoryPor
 import com.jyjun.projectbp.domain.developer.model.Developer;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component
@@ -23,5 +24,9 @@ public class LoadDeveloperService {
     public Developer loadByRootAccountIdOrThrow(Long rootAccountId) {
         return developerRepositoryPort.findByRootAccountId(rootAccountId)
                 .orElseThrow(() -> new NoSuchElementException("Developer not found: rootAccountId=" + rootAccountId));
+    }
+
+    public List<Developer> loadAllByIds(List<Long> ids) {
+        return developerRepositoryPort.findAllByIds(ids);
     }
 }

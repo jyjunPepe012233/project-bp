@@ -14,7 +14,7 @@ services:
 
   app:
     build: .
-    image: project-bp:latest
+    image: 3317_jinyejun
     ports:
       - "8080:8080"
     depends_on:
@@ -28,6 +28,13 @@ services:
       FILE_STORAGE_BASE_DIR: ${FILE_STORAGE_BASE_DIR}
     volumes:
       - bundle_files:/app/files
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
 
 volumes:
   mysql_data:

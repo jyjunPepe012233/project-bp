@@ -14,6 +14,8 @@ import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermiss
 import com.jyjun.projectbp.application.permission.util.HasGameAccessPermissionUtil;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
 import com.jyjun.projectbp.domain.gameaccesspermission.enums.GameAccessPermissionType;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
+import com.jyjun.projectbp.common.exception.SelfPermissionModifyException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +57,7 @@ public class UpdateGamePermissionUseCase {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
 
         if (currentAccountId.equals(input.accountId())) {
-            throw new IllegalArgumentException("본인의 권한은 직접 변경할 수 없습니다.");
+            throw new SelfPermissionModifyException("본인의 권한은 직접 변경할 수 없습니다.");
         }
 
         Long developerId = loadGameService.loadByIdOrThrow(input.gameId()).getDeveloperId();
@@ -67,7 +69,7 @@ public class UpdateGamePermissionUseCase {
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, input.gameId(), GameAccessPermissionType.ADMIN)) {
             // 게임 ADMIN 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("게임 권한을 관리할 권한이 없습니다.");
+            throw new AccessDeniedException("게임 권한을 관리할 권한이 없습니다.");
         }
 
         deleteGameAccessPermissionService.deleteByAccountIdAndGameId(input.accountId(), input.gameId());

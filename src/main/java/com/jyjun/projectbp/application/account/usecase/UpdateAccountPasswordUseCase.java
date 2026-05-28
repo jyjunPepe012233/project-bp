@@ -1,6 +1,7 @@
 package com.jyjun.projectbp.application.account.usecase;
 
 import com.jyjun.projectbp.application.account.model.input.UpdateAccountPasswordInput;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.application.account.service.UpdateAccountPasswordService;
 import com.jyjun.projectbp.application.account.util.IsManagerOfDeveloperAccountUtil;
 import com.jyjun.projectbp.application.account.util.IsManagerOfGameAccountUtil;
@@ -45,7 +46,7 @@ public class UpdateAccountPasswordUseCase {
         } else if (isManagerOfGameAccountUtil.is(currentAccountId, input.accountId())) {
             // 게임 단위 계정 관리 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("계정의 비밀번호를 수정할 권한이 없습니다.");
+            throw new AccessDeniedException("계정의 비밀번호를 수정할 권한이 없습니다.");
         }
 
         updateAccountPasswordService.updatePassword(input.accountId(), input.password());

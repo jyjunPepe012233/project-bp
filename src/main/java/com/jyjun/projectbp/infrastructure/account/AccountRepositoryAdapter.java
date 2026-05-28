@@ -4,6 +4,7 @@ import com.jyjun.projectbp.application.account.outbound.AccountRepositoryPort;
 import com.jyjun.projectbp.domain.account.model.Account;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,20 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     @Override
     public Optional<Account> findByName(String name) {
         return jpaAccountRepository.findByName(name);
+    }
+
+    @Override
+    public List<Account> findAllByIds(List<Long> ids) {
+        return jpaAccountRepository.findAllById(ids);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return jpaAccountRepository.existsByName(name);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaAccountRepository.deleteById(id);
     }
 }

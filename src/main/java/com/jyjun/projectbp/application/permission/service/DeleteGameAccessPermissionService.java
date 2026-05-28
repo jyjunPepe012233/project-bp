@@ -15,4 +15,8 @@ public class DeleteGameAccessPermissionService {
     public void deleteByAccountIdAndGameId(Long accountId, Long gameId) {
         gameAccessPermissionRepositoryPort.deleteByAccountIdAndGameId(accountId, gameId);
     }
+
+    public void deleteByGameId(Long gameId) {
+        gameAccessPermissionRepositoryPort.deleteByGameId(gameId);
+    }
 }

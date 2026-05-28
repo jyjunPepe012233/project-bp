@@ -33,6 +33,11 @@ public class DeveloperAccessPermissionRepositoryAdapter implements DeveloperAcce
     }
 
     @Override
+    public List<DeveloperAccessPermission> findByDeveloperId(Long developerId) {
+        return jpaDeveloperAccessPermissionRepository.findByDeveloperId(developerId);
+    }
+
+    @Override
     public List<DeveloperAccessPermission> findByAccountIdAndDeveloperId(Long accountId, Long developerId) {
         return jpaDeveloperAccessPermissionRepository.findByAccountIdAndDeveloperId(accountId, developerId);
     }
@@ -45,5 +50,15 @@ public class DeveloperAccessPermissionRepositoryAdapter implements DeveloperAcce
     @Override
     public void deleteByAccountIdAndDeveloperId(Long accountId, Long developerId) {
         jpaDeveloperAccessPermissionRepository.deleteByAccountIdAndDeveloperId(accountId, developerId);
+    }
+
+    @Override
+    public void deleteByAccountId(Long accountId) {
+        jpaDeveloperAccessPermissionRepository.deleteByAccountId(accountId);
+    }
+
+    @Override
+    public void deleteByDeveloperId(Long developerId) {
+        jpaDeveloperAccessPermissionRepository.deleteByDeveloperId(developerId);
     }
 }

@@ -9,6 +9,7 @@ import com.jyjun.projectbp.application.developer.util.IsRootAccountOfDeveloperUt
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
 import com.jyjun.projectbp.domain.developer.model.Developer;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class UpdateDeveloperUseCase {
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, developerId, DeveloperAccessPermissionType.ADMIN)) {
             // 개발자 ADMIN 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("개발자 정보를 수정할 권한이 없습니다.");
+            throw new AccessDeniedException("개발자 정보를 수정할 권한이 없습니다.");
         }
 
         Developer updated = updateDeveloperService.updateName(developerId, input.name());

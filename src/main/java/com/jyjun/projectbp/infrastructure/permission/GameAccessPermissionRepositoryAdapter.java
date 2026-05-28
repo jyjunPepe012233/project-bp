@@ -33,6 +33,11 @@ public class GameAccessPermissionRepositoryAdapter implements GameAccessPermissi
     }
 
     @Override
+    public List<GameAccessPermission> findByGameId(Long gameId) {
+        return jpaGameAccessPermissionRepository.findByGameId(gameId);
+    }
+
+    @Override
     public List<GameAccessPermission> findByAccountIdAndGameId(Long accountId, Long gameId) {
         return jpaGameAccessPermissionRepository.findByAccountIdAndGameId(accountId, gameId);
     }
@@ -45,5 +50,15 @@ public class GameAccessPermissionRepositoryAdapter implements GameAccessPermissi
     @Override
     public void deleteByAccountIdAndGameId(Long accountId, Long gameId) {
         jpaGameAccessPermissionRepository.deleteByAccountIdAndGameId(accountId, gameId);
+    }
+
+    @Override
+    public void deleteByAccountId(Long accountId) {
+        jpaGameAccessPermissionRepository.deleteByAccountId(accountId);
+    }
+
+    @Override
+    public void deleteByGameId(Long gameId) {
+        jpaGameAccessPermissionRepository.deleteByGameId(gameId);
     }
 }

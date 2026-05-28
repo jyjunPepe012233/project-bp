@@ -21,6 +21,10 @@ public class LoadDeveloperAccessPermissionService {
         return developerAccessPermissionRepositoryPort.findByAccountId(accountId);
     }
 
+    public List<DeveloperAccessPermission> loadByDeveloperId(Long developerId) {
+        return developerAccessPermissionRepositoryPort.findByDeveloperId(developerId);
+    }
+
     public List<DeveloperAccessPermission> loadByAccountIdAndDeveloperId(Long accountId, Long developerId) {
         return developerAccessPermissionRepositoryPort.findByAccountIdAndDeveloperId(accountId, developerId);
     }

@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface JpaDeveloperRepository extends JpaRepository<Developer, Long> {
 
     Optional<Developer> findByRootAccountId(Long rootAccountId);
+
+    boolean existsByName(String name);
 }

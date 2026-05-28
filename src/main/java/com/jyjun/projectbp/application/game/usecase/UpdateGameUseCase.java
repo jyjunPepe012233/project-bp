@@ -11,6 +11,7 @@ import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPer
 import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
 import com.jyjun.projectbp.application.permission.util.HasGameAccessPermissionUtil;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
 import com.jyjun.projectbp.domain.game.model.Game;
 import com.jyjun.projectbp.domain.gameaccesspermission.enums.GameAccessPermissionType;
@@ -64,7 +65,7 @@ public class UpdateGameUseCase {
         } else if (hasGameAccessPermissionUtil.has(currentAccountId, gameId, GameAccessPermissionType.PRIMARY_WRITE)) {
             // 게임 PRIMARY_WRITE 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("게임 정보를 수정할 권한이 없습니다.");
+            throw new AccessDeniedException("게임 정보를 수정할 권한이 없습니다.");
         }
 
         Game updated = updateGameService.update(gameId, input.title(), input.description());

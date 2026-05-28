@@ -10,6 +10,8 @@ import com.jyjun.projectbp.application.permission.service.DeleteDeveloperAccessP
 import com.jyjun.projectbp.application.permission.service.LoadDeveloperAccessPermissionService;
 import com.jyjun.projectbp.application.permission.util.HasDeveloperAccessPermissionUtil;
 import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
+import com.jyjun.projectbp.common.exception.AccessDeniedException;
+import com.jyjun.projectbp.common.exception.SelfPermissionModifyException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +47,7 @@ public class UpdateDeveloperPermissionUseCase {
         Long currentAccountId = loadCurrentAccountService.getCurrentAccountId();
 
         if (currentAccountId.equals(input.accountId())) {
-            throw new IllegalArgumentException("본인의 권한은 직접 변경할 수 없습니다.");
+            throw new SelfPermissionModifyException("본인의 권한은 직접 변경할 수 없습니다.");
         }
 
         if (isRootAccountOfDeveloperUtil.is(currentAccountId, input.developerId())) {
@@ -53,7 +55,7 @@ public class UpdateDeveloperPermissionUseCase {
         } else if (hasDeveloperAccessPermissionUtil.has(currentAccountId, input.developerId(), DeveloperAccessPermissionType.ADMIN)) {
             // 개발자 ADMIN 권한 있으면 통과
         } else {
-            throw new IllegalArgumentException("개발자 권한을 관리할 권한이 없습니다.");
+            throw new AccessDeniedException("개발자 권한을 관리할 권한이 없습니다.");
         }
 
         // 모든 권한을 삭제한 뒤 다시 생성함
