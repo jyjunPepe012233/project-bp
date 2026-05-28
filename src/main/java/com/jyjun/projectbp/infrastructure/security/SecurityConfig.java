@@ -76,6 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/developers").permitAll()
                         .requestMatchers(HttpMethod.GET, "/developers/{developerId}").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/developers/{developerId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/developers/{developerId}").permitAll()
 
                         // Game 도메인
                         .requestMatchers(HttpMethod.GET, "/games").permitAll()

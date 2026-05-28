@@ -40,4 +40,9 @@ public class DeveloperRepositoryAdapter implements DeveloperRepositoryPort {
     public boolean existsByName(String name) {
         return jpaDeveloperRepository.existsByName(name);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaDeveloperRepository.deleteById(id);
+    }
 }

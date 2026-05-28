@@ -16,4 +16,6 @@ public interface DeveloperRepositoryPort {
     List<Developer> findAllByIds(List<Long> ids);
 
     boolean existsByName(String name);
+
+    void deleteById(Long id);
 }

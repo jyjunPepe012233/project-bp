@@ -15,4 +15,8 @@ public class DeleteDeveloperAccessPermissionService {
     public void deleteByAccountIdAndDeveloperId(Long accountId, Long developerId) {
         developerAccessPermissionRepositoryPort.deleteByAccountIdAndDeveloperId(accountId, developerId);
     }
+
+    public void deleteByDeveloperId(Long developerId) {
+        developerAccessPermissionRepositoryPort.deleteByDeveloperId(developerId);
+    }
 }

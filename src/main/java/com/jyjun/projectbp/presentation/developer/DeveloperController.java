@@ -5,6 +5,7 @@ import com.jyjun.projectbp.application.developer.model.input.UpdateDeveloperInpu
 import com.jyjun.projectbp.application.developer.model.output.LoadDeveloperOutput;
 import com.jyjun.projectbp.application.developer.model.output.UpdateDeveloperOutput;
 import com.jyjun.projectbp.application.developer.usecase.CreateDeveloperUseCase;
+import com.jyjun.projectbp.application.developer.usecase.DeleteDeveloperUseCase;
 import com.jyjun.projectbp.application.developer.usecase.LoadDeveloperListUseCase;
 import com.jyjun.projectbp.application.developer.usecase.LoadDeveloperUseCase;
 import com.jyjun.projectbp.application.developer.usecase.UpdateDeveloperUseCase;
@@ -22,17 +23,20 @@ public class DeveloperController {
     private final LoadDeveloperListUseCase loadDeveloperListUseCase;
     private final LoadDeveloperUseCase loadDeveloperUseCase;
     private final UpdateDeveloperUseCase updateDeveloperUseCase;
+    private final DeleteDeveloperUseCase deleteDeveloperUseCase;
 
     public DeveloperController(
             CreateDeveloperUseCase createDeveloperUseCase,
             LoadDeveloperListUseCase loadDeveloperListUseCase,
             LoadDeveloperUseCase loadDeveloperUseCase,
-            UpdateDeveloperUseCase updateDeveloperUseCase
+            UpdateDeveloperUseCase updateDeveloperUseCase,
+            DeleteDeveloperUseCase deleteDeveloperUseCase
     ) {
         this.createDeveloperUseCase = createDeveloperUseCase;
         this.loadDeveloperListUseCase = loadDeveloperListUseCase;
         this.loadDeveloperUseCase = loadDeveloperUseCase;
         this.updateDeveloperUseCase = updateDeveloperUseCase;
+        this.deleteDeveloperUseCase = deleteDeveloperUseCase;
     }
 
     @GetMapping
@@ -57,5 +61,10 @@ public class DeveloperController {
             @Valid @RequestBody UpdateDeveloperInput input
     ) {
         return new ResponseData<>(updateDeveloperUseCase.execute(new UpdateDeveloperInput(developerId, input.name())));
+    }
+
+    @DeleteMapping("/{developerId}")
+    public void deleteDeveloper(@PathVariable Long developerId) {
+        deleteDeveloperUseCase.execute(developerId);
     }
 }

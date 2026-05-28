@@ -51,4 +51,9 @@ public class DeveloperAccessPermissionRepositoryAdapter implements DeveloperAcce
     public void deleteByAccountIdAndDeveloperId(Long accountId, Long developerId) {
         jpaDeveloperAccessPermissionRepository.deleteByAccountIdAndDeveloperId(accountId, developerId);
     }
+
+    @Override
+    public void deleteByDeveloperId(Long developerId) {
+        jpaDeveloperAccessPermissionRepository.deleteByDeveloperId(developerId);
+    }
 }

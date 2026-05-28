@@ -22,4 +22,7 @@ public interface JpaDeveloperAccessPermissionRepository extends JpaRepository<De
 
     @Transactional
     void deleteByAccountIdAndDeveloperId(Long accountId, Long developerId);
+
+    @Transactional
+    void deleteByDeveloperId(Long developerId);
 }
