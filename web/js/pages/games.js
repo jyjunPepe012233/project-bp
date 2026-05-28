@@ -255,7 +255,7 @@ const gamesPage = (() => {
 
   async function loadGameAccounts(container, gameId, accounts) {
     try {
-      const GAME_PERM_LABEL = { ADMIN: 'Admin', PUBLISHER: 'Publisher' };
+      const GAME_PERM_LABEL = { ADMIN: 'Admin', PRIMARY_WRITE: 'Primary Write', MAINTAIN: 'Maintain' };
 
       const permsResults = await Promise.all(
         accounts.map(a =>
