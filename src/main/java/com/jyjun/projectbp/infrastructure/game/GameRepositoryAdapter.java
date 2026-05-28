@@ -40,4 +40,9 @@ public class GameRepositoryAdapter implements GameRepositoryPort {
     public boolean existsByTitle(String title) {
         return jpaGameRepository.existsByTitle(title);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaGameRepository.deleteById(id);
+    }
 }

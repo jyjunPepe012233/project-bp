@@ -51,4 +51,9 @@ public class GameAccessPermissionRepositoryAdapter implements GameAccessPermissi
     public void deleteByAccountIdAndGameId(Long accountId, Long gameId) {
         jpaGameAccessPermissionRepository.deleteByAccountIdAndGameId(accountId, gameId);
     }
+
+    @Override
+    public void deleteByGameId(Long gameId) {
+        jpaGameAccessPermissionRepository.deleteByGameId(gameId);
+    }
 }

@@ -82,6 +82,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/games").authenticated()
                         .requestMatchers(HttpMethod.GET, "/games/{gameId}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/games/{gameId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/games/{gameId}").authenticated()
 
                         // Patch 도메인
                         .requestMatchers(HttpMethod.POST, "/games/{gameId}/patches").authenticated()

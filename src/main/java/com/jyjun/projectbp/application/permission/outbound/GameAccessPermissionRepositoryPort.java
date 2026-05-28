@@ -21,4 +21,6 @@ public interface GameAccessPermissionRepositoryPort {
     Optional<GameAccessPermission> findByAccountIdAndGameIdAndPermission(Long accountId, Long gameId, GameAccessPermissionType permission);
 
     void deleteByAccountIdAndGameId(Long accountId, Long gameId);
+
+    void deleteByGameId(Long gameId);
 }

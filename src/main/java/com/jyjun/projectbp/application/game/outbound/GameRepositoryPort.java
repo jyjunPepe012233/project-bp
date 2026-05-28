@@ -16,4 +16,6 @@ public interface GameRepositoryPort {
     List<Game> findAllByIds(List<Long> ids);
 
     boolean existsByTitle(String title);
+
+    void deleteById(Long id);
 }
