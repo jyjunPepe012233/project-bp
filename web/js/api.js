@@ -210,6 +210,10 @@ const api = (() => {
       return request('PATCH', `/accounts/${accountId}/password`, { password }, true);
     },
 
+    deleteAccount(accountId) {
+      return request('DELETE', `/accounts/${accountId}`, undefined, true);
+    },
+
     updateDeveloperPermission(accountId, developerId, permissions) {
       return request('PUT', `/developers/${developerId}/permissions/${accountId}`, permissions, true);
     },

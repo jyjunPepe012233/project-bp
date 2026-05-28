@@ -7,6 +7,7 @@ import com.jyjun.projectbp.application.account.model.output.CreateAccountOutput;
 import com.jyjun.projectbp.application.account.model.output.LoadAccountOutput;
 import com.jyjun.projectbp.application.account.model.output.UpdateAccountOutput;
 import com.jyjun.projectbp.application.account.usecase.CreateAccountUseCase;
+import com.jyjun.projectbp.application.account.usecase.DeleteAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountListUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadAccountUseCase;
 import com.jyjun.projectbp.application.account.usecase.LoadMyAccountUseCase;
@@ -28,6 +29,7 @@ public class AccountController {
     private final LoadAccountUseCase loadAccountUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
     private final UpdateAccountPasswordUseCase updateAccountPasswordUseCase;
+    private final DeleteAccountUseCase deleteAccountUseCase;
 
     public AccountController(
             CreateAccountUseCase createAccountUseCase,
@@ -35,7 +37,8 @@ public class AccountController {
             LoadMyAccountUseCase loadMyAccountUseCase,
             LoadAccountUseCase loadAccountUseCase,
             UpdateAccountUseCase updateAccountUseCase,
-            UpdateAccountPasswordUseCase updateAccountPasswordUseCase
+            UpdateAccountPasswordUseCase updateAccountPasswordUseCase,
+            DeleteAccountUseCase deleteAccountUseCase
     ) {
         this.createAccountUseCase = createAccountUseCase;
         this.loadAccountListUseCase = loadAccountListUseCase;
@@ -43,6 +46,7 @@ public class AccountController {
         this.loadAccountUseCase = loadAccountUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
         this.updateAccountPasswordUseCase = updateAccountPasswordUseCase;
+        this.deleteAccountUseCase = deleteAccountUseCase;
     }
 
     @GetMapping
@@ -82,5 +86,10 @@ public class AccountController {
             @Valid @RequestBody UpdateAccountPasswordInput input
     ) {
         updateAccountPasswordUseCase.execute(new UpdateAccountPasswordInput(accountId, input.password()));
+    }
+
+    @DeleteMapping("/{accountId}")
+    public void deleteAccount(@PathVariable Long accountId) {
+        deleteAccountUseCase.execute(accountId);
     }
 }

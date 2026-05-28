@@ -21,5 +21,7 @@ public interface JpaGameAccessPermissionRepository extends JpaRepository<GameAcc
 
     void deleteByAccountIdAndGameId(Long accountId, Long gameId);
 
+    void deleteByAccountId(Long accountId);
+
     void deleteByGameId(Long gameId);
 }

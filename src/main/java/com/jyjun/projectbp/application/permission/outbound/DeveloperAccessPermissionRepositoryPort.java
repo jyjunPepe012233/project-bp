@@ -22,5 +22,7 @@ public interface DeveloperAccessPermissionRepositoryPort {
 
     void deleteByAccountIdAndDeveloperId(Long accountId, Long developerId);
 
+    void deleteByAccountId(Long accountId);
+
     void deleteByDeveloperId(Long developerId);
 }

@@ -335,6 +335,19 @@ const accountsPage = (() => {
         </form>
       </div>
 
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title" style="color:var(--error)">계정 삭제</div>
+        <p style="font-size:12px;color:var(--text-sub);margin-bottom:12px">삭제한 계정은 복구할 수 없습니다. 권한과 로그인 토큰도 함께 삭제됩니다.</p>
+        <div id="acc-edit-del-alert" hidden></div>
+        <form id="acc-edit-del-form">
+          <div class="form-group">
+            <label class="form-label" for="acc-edit-del-confirm">확인용 계정명 입력</label>
+            <input id="acc-edit-del-confirm" class="form-input" type="text" autocomplete="off" placeholder="${escapeHtml(account.name)}" />
+          </div>
+          <button id="acc-edit-del-btn" class="btn" type="submit" style="width:auto;padding:9px 24px;background:var(--error);color:#fff;border:none">계정 삭제</button>
+        </form>
+      </div>
+
       <div class="card">
         <div class="card-title">권한 수정</div>
         <p style="font-size:12px;color:var(--text-sub);margin-bottom:16px">각 항목의 저장 버튼을 누르면 해당 개발사/게임의 권한이 선택한 값으로 덮어씌워집니다.</p>
@@ -409,6 +422,49 @@ const accountsPage = (() => {
       } finally {
         btn.disabled = false;
         btn.textContent = '비밀번호 변경';
+      }
+    });
+
+    // 계정 삭제
+    document.getElementById('acc-edit-del-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const confirmName = document.getElementById('acc-edit-del-confirm').value.trim();
+      if (confirmName !== account.name) {
+        setEditAlert('acc-edit-del-alert', 'error', '확인용 계정명이 일치하지 않습니다.');
+        return;
+      }
+
+      let me = null;
+      try {
+        const meRes = await api.getMyAccount();
+        me = meRes.data;
+      } catch {
+        // 서버에서 다시 검증하므로 여기서는 안내 없이 진행
+      }
+
+      if (me?.id === account.id) {
+        setEditAlert('acc-edit-del-alert', 'error', '자기 자신의 계정은 삭제할 수 없습니다.');
+        return;
+      }
+
+      const ok = window.confirm(`계정 "${account.name}"을(를) 정말 삭제하시겠습니까?`);
+      if (!ok) return;
+
+      const btn = document.getElementById('acc-edit-del-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+      setEditAlert('acc-edit-del-alert', '');
+
+      try {
+        await api.deleteAccount(account.id);
+        _selectedAccount = null;
+        location.hash = '/accounts';
+      } catch (err) {
+        setEditAlert('acc-edit-del-alert', 'error', err.message || '삭제에 실패했습니다.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '계정 삭제';
       }
     });
   }

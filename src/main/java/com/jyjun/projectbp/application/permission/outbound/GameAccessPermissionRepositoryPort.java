@@ -22,5 +22,7 @@ public interface GameAccessPermissionRepositoryPort {
 
     void deleteByAccountIdAndGameId(Long accountId, Long gameId);
 
+    void deleteByAccountId(Long accountId);
+
     void deleteByGameId(Long gameId);
 }

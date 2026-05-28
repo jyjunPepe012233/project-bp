@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/accounts/{accountId}/permissions").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/accounts/{accountId}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/accounts/{accountId}/password").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/accounts/{accountId}").authenticated()
 
                         // Developer 도메인
                         .requestMatchers(HttpMethod.POST, "/developers").permitAll() // 개발자 등록을 해야 루트 계정이 만들어짐. 이 API는 공개되어 있어야 함
