@@ -63,6 +63,7 @@ const gamesPage = (() => {
             </div>
             <div class="game-card-footer">
               <button class="game-card-edit-btn" data-idx="${i}">상세 / 수정</button>
+              ${permissions.canDeleteGame(g.developerId) ? `<button class="btn-table-action game-card-delete-btn" data-idx="${i}">삭제</button>` : ''}
             </div>
           </div>
         `).join('')}
@@ -74,6 +75,30 @@ const gamesPage = (() => {
         const idx = Number(btn.dataset.idx);
         _selectedGame = _games[idx];
         location.hash = '/games/edit';
+      });
+    });
+
+    body.querySelectorAll('.game-card-delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const idx = Number(btn.dataset.idx);
+        const game = _games[idx];
+        if (!game) return;
+
+        if (!confirm(`게임을 삭제하시겠습니까?\n${game.title}\n\n관련 패치/카탈로그/권한도 함께 삭제됩니다.`)) return;
+
+        const originalLabel = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '삭제 중…';
+
+        try {
+          await api.deleteGame(game.id);
+          _games = _games.filter(g => g.id !== game.id);
+          await loadList();
+        } catch (err) {
+          alert(err.message || '게임 삭제에 실패했습니다.');
+          btn.disabled = false;
+          btn.textContent = originalLabel;
+        }
       });
     });
   }
