@@ -16,4 +16,6 @@ public interface AccountRepositoryPort {
     List<Account> findAllByIds(List<Long> ids);
 
     boolean existsByName(String name);
+
+    void deleteById(Long id);
 }

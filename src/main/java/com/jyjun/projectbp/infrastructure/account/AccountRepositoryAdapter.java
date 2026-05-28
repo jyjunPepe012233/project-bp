@@ -40,4 +40,9 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     public boolean existsByName(String name) {
         return jpaAccountRepository.existsByName(name);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaAccountRepository.deleteById(id);
+    }
 }

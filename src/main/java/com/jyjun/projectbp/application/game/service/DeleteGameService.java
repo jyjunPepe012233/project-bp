@@ -1,31 +1,42 @@
 package com.jyjun.projectbp.application.game.service;
 
+import com.jyjun.projectbp.application.account.service.DeleteAccountService;
 import com.jyjun.projectbp.application.game.outbound.GameRepositoryPort;
 import com.jyjun.projectbp.application.patch.service.DeletePatchService;
 import com.jyjun.projectbp.application.patch.service.LoadPatchService;
-import com.jyjun.projectbp.application.permission.outbound.GameAccessPermissionRepositoryPort;
+import com.jyjun.projectbp.application.permission.service.DeleteGameAccessPermissionService;
+import com.jyjun.projectbp.application.permission.service.LoadGameAccessPermissionService;
+import com.jyjun.projectbp.domain.gameaccesspermission.model.GameAccessPermission;
 import com.jyjun.projectbp.domain.patch.model.Patch;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class DeleteGameService {
 
     private final LoadPatchService loadPatchService;
     private final DeletePatchService deletePatchService;
-    private final GameAccessPermissionRepositoryPort gameAccessPermissionRepositoryPort;
+    private final LoadGameAccessPermissionService loadGameAccessPermissionService;
+    private final DeleteGameAccessPermissionService deleteGameAccessPermissionService;
+    private final DeleteAccountService deleteAccountService;
     private final GameRepositoryPort gameRepositoryPort;
 
     public DeleteGameService(
             LoadPatchService loadPatchService,
             DeletePatchService deletePatchService,
-            GameAccessPermissionRepositoryPort gameAccessPermissionRepositoryPort,
+            LoadGameAccessPermissionService loadGameAccessPermissionService,
+            DeleteGameAccessPermissionService deleteGameAccessPermissionService,
+            DeleteAccountService deleteAccountService,
             GameRepositoryPort gameRepositoryPort
     ) {
         this.loadPatchService = loadPatchService;
         this.deletePatchService = deletePatchService;
-        this.gameAccessPermissionRepositoryPort = gameAccessPermissionRepositoryPort;
+        this.loadGameAccessPermissionService = loadGameAccessPermissionService;
+        this.deleteGameAccessPermissionService = deleteGameAccessPermissionService;
+        this.deleteAccountService = deleteAccountService;
         this.gameRepositoryPort = gameRepositoryPort;
     }
 
@@ -35,7 +46,24 @@ public class DeleteGameService {
             deletePatchService.delete(patch, gameUuid);
         }
 
-        gameAccessPermissionRepositoryPort.deleteByGameId(gameId);
+        Set<Long> affectedAccountIds = collectAffectedAccountIds(gameId);
+        deleteGameAccessPermissionService.deleteByGameId(gameId);
+        deleteIndependentAccounts(affectedAccountIds);
         gameRepositoryPort.deleteById(gameId);
+    }
+
+    private Set<Long> collectAffectedAccountIds(Long gameId) {
+        List<GameAccessPermission> permissions = loadGameAccessPermissionService.loadByGameId(gameId);
+        Set<Long> accountIds = new HashSet<>();
+        for (GameAccessPermission permission : permissions) {
+            accountIds.add(permission.getAccountId());
+        }
+        return accountIds;
+    }
+
+    private void deleteIndependentAccounts(Set<Long> accountIds) {
+        for (Long accountId : accountIds) {
+            deleteAccountService.deleteIfIndependent(accountId);
+        }
     }
 }
