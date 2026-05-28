@@ -244,6 +244,11 @@ const api = (() => {
       return uploadFile(`${API_BASE}/games/${gameId}/bundles?platform=${encodeURIComponent(platform)}`, 'bundle', bundleFile);
     },
 
+    deleteBundle(gameId, platform, filename) {
+      const query = `platform=${encodeURIComponent(platform)}&filename=${encodeURIComponent(filename)}`;
+      return request('DELETE', `/games/${gameId}/bundles?${query}`, undefined, true);
+    },
+
     // Patch - Delete Catalog
     deleteCatalog(patchId) {
       return request('DELETE', `/patches/${patchId}/catalog`, undefined, true);

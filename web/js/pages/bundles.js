@@ -284,6 +284,7 @@ const bundlesPage = (() => {
                 <span class="catalog-url-box"><span class="catalog-method-badge">GET</span><span class="bundle-file-path">${escapeHtml(dlPath)}</span></span>
                 <button class="catalog-copy-btn catalog-download-btn" data-url="${escapeHtml(dlPath)}" data-filename="${escapeHtml(name)}">다운로드</button>
                 <button class="catalog-copy-btn bundle-copy-btn" data-path="${escapeHtml(dlPath)}">경로 복사</button>
+                <button class="btn-table-action bundle-delete-btn" data-platform="${escapeHtml(p.platform)}" data-filename="${escapeHtml(name)}">삭제</button>
               </div>`;
             }).join('')
           : `<p class="patch-empty-msg" style="margin:8px 0">이 플랫폼에 업로드된 번들이 없습니다.</p>`;
@@ -310,6 +311,27 @@ const bundlesPage = (() => {
 
       result.querySelectorAll('.catalog-download-btn').forEach(btn => {
         btn.addEventListener('click', () => downloadFile(btn.dataset.url, btn.dataset.filename, btn));
+      });
+
+      result.querySelectorAll('.bundle-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const platform = btn.dataset.platform;
+          const filename = btn.dataset.filename;
+          if (!confirm(`번들 파일을 삭제하시겠습니까?\n${filename}`)) return;
+
+          const originalLabel = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = '삭제 중…';
+
+          try {
+            await api.deleteBundle(gameId, platform, filename);
+            await loadBundles();
+          } catch (err) {
+            alert(err.message || '번들 삭제에 실패했습니다.');
+            btn.disabled = false;
+            btn.textContent = originalLabel;
+          }
+        });
       });
     } catch (err) {
       result.innerHTML = `<div class="card" style="margin-top:12px"><p class="patch-empty-msg" style="color:var(--error)">${escapeHtml(err.message || '번들 목록을 불러오지 못했습니다.')}</p></div>`;

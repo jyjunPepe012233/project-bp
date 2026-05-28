@@ -98,6 +98,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}/catalog-hash").authenticated()
                         .requestMatchers(HttpMethod.GET, "/games/{gameId}/bundles").authenticated()
                         .requestMatchers(HttpMethod.POST, "/games/{gameId}/bundles").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/games/{gameId}/bundles").authenticated()
 
                         // Permission 도메인
                         .requestMatchers(HttpMethod.PUT, "/developers/{developerId}/permissions/{accountId}").authenticated()

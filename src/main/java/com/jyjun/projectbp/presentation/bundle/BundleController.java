@@ -1,8 +1,10 @@
 package com.jyjun.projectbp.presentation.bundle;
 
+import com.jyjun.projectbp.application.bundle.model.input.DeleteBundleInput;
 import com.jyjun.projectbp.application.bundle.model.input.UploadBundleInput;
 import com.jyjun.projectbp.application.bundle.model.output.LoadBundleFileListOutput;
 import com.jyjun.projectbp.application.bundle.model.output.LoadGameBundleListOutput;
+import com.jyjun.projectbp.application.bundle.usecase.DeleteBundleUseCase;
 import com.jyjun.projectbp.application.bundle.usecase.LoadBundleFileListUseCase;
 import com.jyjun.projectbp.application.bundle.usecase.LoadGameBundleListUseCase;
 import com.jyjun.projectbp.application.bundle.usecase.UploadBundleUseCase;
@@ -20,15 +22,18 @@ import org.springframework.web.bind.annotation.*;
 public class BundleController {
 
     private final UploadBundleUseCase uploadBundleUseCase;
+    private final DeleteBundleUseCase deleteBundleUseCase;
     private final LoadBundleFileListUseCase loadBundleFileListUseCase;
     private final LoadGameBundleListUseCase loadGameBundleListUseCase;
 
     public BundleController(
             UploadBundleUseCase uploadBundleUseCase,
+            DeleteBundleUseCase deleteBundleUseCase,
             LoadBundleFileListUseCase loadBundleFileListUseCase,
             LoadGameBundleListUseCase loadGameBundleListUseCase
     ) {
         this.uploadBundleUseCase = uploadBundleUseCase;
+        this.deleteBundleUseCase = deleteBundleUseCase;
         this.loadBundleFileListUseCase = loadBundleFileListUseCase;
         this.loadGameBundleListUseCase = loadGameBundleListUseCase;
     }
@@ -61,5 +66,14 @@ public class BundleController {
     @GetMapping("/games/{gameId}/bundles")
     public ResponseData<LoadGameBundleListOutput> loadGameBundleList(@PathVariable Long gameId) {
         return new ResponseData<>(loadGameBundleListUseCase.execute(gameId));
+    }
+
+    @DeleteMapping("/games/{gameId}/bundles")
+    public void deleteBundle(
+            @PathVariable Long gameId,
+            @RequestParam PatchPlatform platform,
+            @RequestParam String filename
+    ) {
+        deleteBundleUseCase.execute(new DeleteBundleInput(gameId, platform, filename));
     }
 }
