@@ -86,25 +86,47 @@ const accountsPage = (() => {
   function renderPermissions(perms, devMap, gameMap) {
     if (!perms) return '';
 
-    const devRows = (perms.developerPermissions ?? []).map(p => `
+    const developerPermissions = Array.isArray(perms.developerPermissions) ? perms.developerPermissions : [];
+    const gamePermissions = Array.isArray(perms.gamePermissions) ? perms.gamePermissions : [];
+
+    // 백엔드 응답이
+    // 1) [{ developerId, permissions: [...] }, ...] 형태이거나
+    // 2) ['ADMIN', 'PUBLISHER'] 같은 enum 배열 형태일 수 있어 둘 다 처리
+    const devRows = developerPermissions.map(p => {
+      const isScoped = p && typeof p === 'object' && Array.isArray(p.permissions);
+      const tags = isScoped ? p.permissions : (typeof p === 'string' ? [p] : []);
+      const subject = isScoped
+        ? (devMap[p.developerId] ?? `개발사 #${p.developerId}`)
+        : '개발사(범위 정보 없음)';
+
+      return `
       <div class="perm-row">
-        <span class="perm-subject">${escapeHtml(devMap[p.developerId] ?? `개발사 #${p.developerId}`)}</span>
+        <span class="perm-subject">${escapeHtml(subject)}</span>
         <span class="perm-type-label">개발사</span>
         <div class="perm-tags">
-          ${p.permissions.map(t => `<span class="perm-tag perm-tag-dev">${DEV_PERM_LABEL[t] ?? t}</span>`).join('')}
+          ${tags.map(t => `<span class="perm-tag perm-tag-dev">${DEV_PERM_LABEL[t] ?? t}</span>`).join('')}
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
-    const gameRows = (perms.gamePermissions ?? []).map(p => `
+    const gameRows = gamePermissions.map(p => {
+      const isScoped = p && typeof p === 'object' && Array.isArray(p.permissions);
+      const tags = isScoped ? p.permissions : (typeof p === 'string' ? [p] : []);
+      const subject = isScoped
+        ? (gameMap[p.gameId] ?? `게임 #${p.gameId}`)
+        : '게임(범위 정보 없음)';
+
+      return `
       <div class="perm-row">
-        <span class="perm-subject">${escapeHtml(gameMap[p.gameId] ?? `게임 #${p.gameId}`)}</span>
+        <span class="perm-subject">${escapeHtml(subject)}</span>
         <span class="perm-type-label">게임</span>
         <div class="perm-tags">
-          ${p.permissions.map(t => `<span class="perm-tag perm-tag-game">${GAME_PERM_LABEL[t] ?? t}</span>`).join('')}
+          ${tags.map(t => `<span class="perm-tag perm-tag-game">${GAME_PERM_LABEL[t] ?? t}</span>`).join('')}
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     const hasPerms = devRows || gameRows;
     return `

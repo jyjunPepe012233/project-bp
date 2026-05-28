@@ -1,0 +1,24 @@
+package com.jyjun.projectbp.infrastructure.adapters.file;
+
+import com.jyjun.projectbp.application.file.outbound.FileMetaRepositoryPort;
+import com.jyjun.projectbp.domain.filemeta.model.FileMeta;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class FileMetaRepositoryAdapter implements FileMetaRepositoryPort {
+
+    private final JpaFileMetaRepository jpaFileMetaRepository;
+
+    public FileMetaRepositoryAdapter(JpaFileMetaRepository jpaFileMetaRepository) {
+        this.jpaFileMetaRepository = jpaFileMetaRepository;
+     }
+
+     public FileMeta save(FileMeta fileMeta) {
+         return jpaFileMetaRepository.save(fileMeta);
+     }
+
+     public FileMeta findByOriginalName(String originalName) {
+         return jpaFileMetaRepository.findByOriginalName(originalName)
+                 .orElseThrow(() -> new RuntimeException("FileMeta not found for originalName: " + originalName));
+     }
+}

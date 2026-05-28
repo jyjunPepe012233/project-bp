@@ -1,0 +1,64 @@
+package com.jyjun.projectbp.infrastructure.adapters.permission;
+
+import com.jyjun.projectbp.application.permission.outbound.DeveloperAccessPermissionRepositoryPort;
+import com.jyjun.projectbp.domain.developeraccesspermission.enums.DeveloperAccessPermissionType;
+import com.jyjun.projectbp.domain.developeraccesspermission.model.DeveloperAccessPermission;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class DeveloperAccessPermissionRepositoryAdapter implements DeveloperAccessPermissionRepositoryPort {
+
+    private final JpaDeveloperAccessPermissionRepository jpaDeveloperAccessPermissionRepository;
+
+    public DeveloperAccessPermissionRepositoryAdapter(JpaDeveloperAccessPermissionRepository jpaDeveloperAccessPermissionRepository) {
+        this.jpaDeveloperAccessPermissionRepository = jpaDeveloperAccessPermissionRepository;
+    }
+
+    @Override
+    public DeveloperAccessPermission save(DeveloperAccessPermission developerAccessPermission) {
+        return jpaDeveloperAccessPermissionRepository.save(developerAccessPermission);
+    }
+
+    @Override
+    public boolean existsByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission) {
+        return jpaDeveloperAccessPermissionRepository.existsByAccountIdAndDeveloperIdAndPermission(accountId, developerId, permission);
+    }
+
+    @Override
+    public List<DeveloperAccessPermission> findByAccountId(Long accountId) {
+        return jpaDeveloperAccessPermissionRepository.findByAccountId(accountId);
+    }
+
+    @Override
+    public List<DeveloperAccessPermission> findByDeveloperId(Long developerId) {
+        return jpaDeveloperAccessPermissionRepository.findByDeveloperId(developerId);
+    }
+
+    @Override
+    public List<DeveloperAccessPermission> findByAccountIdAndDeveloperId(Long accountId, Long developerId) {
+        return jpaDeveloperAccessPermissionRepository.findByAccountIdAndDeveloperId(accountId, developerId);
+    }
+
+    @Override
+    public Optional<DeveloperAccessPermission> findByAccountIdAndDeveloperIdAndPermission(Long accountId, Long developerId, DeveloperAccessPermissionType permission) {
+        return jpaDeveloperAccessPermissionRepository.findByAccountIdAndDeveloperIdAndPermission(accountId, developerId, permission);
+    }
+
+    @Override
+    public void deleteByAccountIdAndDeveloperId(Long accountId, Long developerId) {
+        jpaDeveloperAccessPermissionRepository.deleteByAccountIdAndDeveloperId(accountId, developerId);
+    }
+
+    @Override
+    public void deleteByAccountId(Long accountId) {
+        jpaDeveloperAccessPermissionRepository.deleteByAccountId(accountId);
+    }
+
+    @Override
+    public void deleteByDeveloperId(Long developerId) {
+        jpaDeveloperAccessPermissionRepository.deleteByDeveloperId(developerId);
+    }
+}
