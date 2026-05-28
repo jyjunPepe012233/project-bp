@@ -26,16 +26,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseData<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginOutput output = loginUseCase.execute(new LoginInput(request.name(), request.password()));
-        return new ResponseData<>(new LoginResponse(output));
+    public ResponseData<LoginOutput> login(@Valid @RequestBody LoginInput input) {
+        return new ResponseData<>(loginUseCase.execute(input));
     }
 
     @PostMapping("/reissue")
-    public ResponseData<ReissueAccessTokenResponse> reissue(@Valid @RequestBody ReissueAccessTokenRequest request) {
-        ReissueAccessTokenOutput output = reissueAccessTokenUseCase.execute(
-                new ReissueAccessTokenInput(request.refreshToken())
-        );
-        return new ResponseData<>(new ReissueAccessTokenResponse(output));
+    public ResponseData<ReissueAccessTokenOutput> reissue(@Valid @RequestBody ReissueAccessTokenInput input) {
+        return new ResponseData<>(reissueAccessTokenUseCase.execute(input));
     }
 }
