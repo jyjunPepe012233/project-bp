@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
                         // ResourceHandlerConfig에서 설정한 번들 리소스 접근 경로
+                        // 이 경로로 bundle이나 catalog에 접근할 수 있음
                         .requestMatchers("/bundles/**").permitAll()
 
 
@@ -60,55 +61,53 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/reissue").permitAll()
 
                         // Account 도메인
-                        .requestMatchers(HttpMethod.GET, "/accounts").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/accounts").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/accounts/me").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/accounts/me/permissions").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/accounts/{accountId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/accounts/{accountId}/permissions").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/accounts/{accountId}").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/accounts/{accountId}/password").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/accounts/{accountId}/developer-permissions/{developerId}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/accounts/{accountId}/game-permissions/{gameId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/accounts").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/accounts").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/accounts/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/accounts/me/permissions").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/accounts/{accountId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/accounts/{accountId}/permissions").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/accounts/{accountId}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/accounts/{accountId}/password").authenticated()
 
                         // Developer 도메인
                         .requestMatchers(HttpMethod.POST, "/developers").permitAll() // 개발자 등록을 해야 루트 계정이 만들어짐. 이 API는 공개되어 있어야 함
-                        .requestMatchers(HttpMethod.GET, "/developers").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/developers/{developerId}").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/developers/{developerId}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/developers/{developerId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/developers").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/developers/{developerId}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/developers/{developerId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/developers/{developerId}").authenticated()
 
                         // Game 도메인
-                        .requestMatchers(HttpMethod.GET, "/games").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/games").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/games/{gameId}").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/games/{gameId}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/games/{gameId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/games").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/games").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/games/{gameId}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/games/{gameId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/games/{gameId}").authenticated()
 
                         // Patch 도메인
-                        .requestMatchers(HttpMethod.POST, "/games/{gameId}/patches").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/games/{gameId}/patches/{patchId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/games/{gameId}/patches").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/patches/{patchId}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/games/{gameId}/patches").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/games/{gameId}/patches/{patchId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/games/{gameId}/patches").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/patches/{patchId}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}").authenticated()
 
                         // Catalog 도메인
-                        .requestMatchers(HttpMethod.POST, "/patches/{patchId}/catalog").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/patches/{patchId}/catalog-hash").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/patches/{patchId}/catalog/uploaded").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/patches/{patchId}/catalog-hash/uploaded").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}/catalog").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}/catalog-hash").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/patches/{patchId}/catalog").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/patches/{patchId}/catalog-hash").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/patches/{patchId}/catalog/uploaded").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/patches/{patchId}/catalog-hash/uploaded").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}/catalog").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/patches/{patchId}/catalog-hash").authenticated()
 
                         // Bundle 도메인
-                        .requestMatchers(HttpMethod.GET, "/patches/{patchId}/bundles").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/games/{gameId}/bundles").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/games/{gameId}/bundles").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/games/{gameId}/bundles").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/patches/{patchId}/bundles").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/games/{gameId}/bundles").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/games/{gameId}/bundles").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/games/{gameId}/bundles").authenticated()
 
                         // Permission 도메인
-                        .requestMatchers(HttpMethod.PUT, "/developers/{developerId}/permissions/{accountId}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/games/{gameId}/permissions/{accountId}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/developers/{developerId}/permissions/{accountId}").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/games/{gameId}/permissions/{accountId}").authenticated()
 
                         .anyRequest().denyAll()
                 )
