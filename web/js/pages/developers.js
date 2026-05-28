@@ -92,6 +92,7 @@ const developersPage = (() => {
         if (!dev) return;
 
         if (!confirm(`개발사를 삭제하시겠습니까?\n${dev.name}\n\n소속 게임/패치/관련 계정 데이터가 함께 삭제됩니다.`)) return;
+        if (!confirm('개발사를 삭제하면 이 개발사의 계정도 함께 삭제될 수 있습니다.\n삭제 후 자동 로그아웃됩니다.\n계속 진행하시겠습니까?')) return;
 
         const originalLabel = btn.textContent;
         btn.disabled = true;
@@ -99,9 +100,11 @@ const developersPage = (() => {
 
         try {
           await api.deleteDeveloper(dev.id);
-          _devs = _devs.filter(d => d.id !== dev.id);
-          if (_selectedDev?.id === dev.id) _selectedDev = null;
-          await loadList();
+          alert('개발사가 삭제되었습니다. 계정 정합성을 위해 자동 로그아웃합니다.');
+          store.clearTokens();
+          permissions.clear();
+          location.hash = '/';
+          router.resolve();
         } catch (err) {
           alert(err.message || '개발사 삭제에 실패했습니다.');
           btn.disabled = false;
