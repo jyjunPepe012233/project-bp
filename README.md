@@ -22,8 +22,8 @@ docker compose --env-file .env.test up --build
 - 테스트 계정 PW: `seed_root_1234`
 
 
-# 1. 프로젝트 소개
-<img width="2940" height="1408" alt="image" src="https://github.com/user-attachments/assets/ffecc6e8-f6e0-4ffc-95f0-1fccf7d0b289" />
+# 1. 프로젝트 소개 (영상)
 
-- Unity Addressables 기반 라이브 패치를 지원하는 플랫폼입니다.
-- API나 공식 콘솔 UI를 통해 서비스를 사용하실 수 있습니다.
+(클릭하면 Youtube로 이동합니다.)
+
+[![Video Label](https://img.youtube.com/vi/nWR0FdFMytk/0.jpg)](https://www.youtube.com/watch?v=nWR0FdFMytk)
